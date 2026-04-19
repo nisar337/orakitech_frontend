@@ -277,46 +277,23 @@ export default function Card() {
           </div>
 
           <div>
-            <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
+            <h1 className="text-2xl md:text-3xl text-start font-semibold text-gray-900 mb-2">
               {item.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <div className="flex items-center gap-0.5 text-amber-400">
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <FaStar
-                    key={n}
-                    className={`text-lg ${
-                      reviewStats.average != null &&
-                      n <= Math.round(reviewStats.average)
-                        ? ""
-                        : "text-gray-200"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-gray-500">
-                {reviewStats.average != null
-                  ? reviewStats.average.toFixed(1)
-                  : "—"}{" "}
-                · {reviewStats.count} review
-                {reviewStats.count === 1 ? "" : "s"}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600 mb-1">
+            <p className="text-sm text-gray-600 text-start mb-1">
               Brand: <span className="font-medium text-gray-900">{item.brand}</span>
             </p>
-            <p className="text-3xl font-bold text-[#112B54] mb-4">
-              {pkrFromUsd(item.price)}
-            </p>
             {inStock ? (
-              <span className="rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-semibold text-emerald-800">
+              <span className=" rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-semibold text-emerald-900">
                 In stock
               </span>
             ) : (
-              <span className="rounded-full bg-gray-200 px-3 py-0.5 text-xs font-semibold text-gray-700">
+              <span className="rounded-full bg-gray-200 px-3 py-0.5 text-xs font-semibold text-gray-900">
                 Out of stock
               </span>
             )}
+            
+          
             <ul className="mb-6 mt-4 space-y-2 text-sm text-gray-700">
               {item.ram && (
                 <li className="flex gap-2">
@@ -342,6 +319,7 @@ export default function Card() {
                   <span>Condition: {item.type}</span>
                 </li>
               )}
+              
               {item.category && (
                 <li className="flex gap-2">
                   <span className="text-blue-600">•</span>
@@ -349,8 +327,37 @@ export default function Card() {
                 </li>
               )}
             </ul>
+           
+            <p className=" text-start text-3xl font-bold text-[#112B54] mb-4">
+              {pkrFromUsd(item.price)}
+            </p>
+           
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <div className="flex items-center gap-0.5 text-amber-400">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <FaStar
+                    key={n}
+                    className={`text-lg ${
+                      reviewStats.average != null &&
+                      n <= Math.round(reviewStats.average)
+                        ? ""
+                        : "text-gray-200"
+                    }`}
+                  />
+                ))}
+                
+              </div>
+              
+              <span className="text-sm text-gray-500">
+                {reviewStats.average != null
+                  ? reviewStats.average.toFixed(1)
+                  : "—"}{" "}
+                · {reviewStats.count} review
+                {reviewStats.count === 1 ? "" : "s"}
+              </span>
+            </div>
 
-            <div className="mb-4 flex flex-wrap items-center gap-3">
+            {/* <div className="mb-4 flex flex-wrap items-center gap-3">
               <span className="text-sm text-gray-600">Qty</span>
               <button
                 type="button"
@@ -367,7 +374,7 @@ export default function Card() {
               >
                 +
               </button>
-            </div>
+            </div> */}
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <button
                 type="button"

@@ -189,7 +189,7 @@ export default function AddProduct() {
         state: {
           notice: isEdit
             ? "Product updated successfully."
-            : "Product added and visible on the storefront.",
+            : "Product added and visible to site.",
         },
       });
     } catch (e) {
@@ -204,14 +204,10 @@ export default function AddProduct() {
     <FormProvider {...methods}>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
         <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-lg p-8 rounded-3xl shadow-xl border border-gray-200">
-          <h2 className="text-3xl font-bold text-[#112B54] mb-2">
+          <h2 className="text-3xl mb-6 font-bold text-[#112B54] mb-2">
             {isEdit ? "Edit product" : "Add new product"}
           </h2>
-          <p className="text-gray-600 text-sm mb-6">
-            {isEdit
-              ? "Update details below. The product URL (slug) stays the same so links keep working. Add new photos only if you want to replace the gallery."
-              : "Saves to the database and appears on the home page immediately. You can skip photos to use the default image."}
-          </p>
+         
 
           {loadError && (
             <p className="mb-4 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">
@@ -279,19 +275,19 @@ export default function AddProduct() {
                 />
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="text-gray-500 grid md:grid-cols-2 gap-4">
                 <Select
                   name={"ram"}
                   title={"RAM"}
                   id={"product-ram"}
-                  hiddenValue={"--Select RAM--"}
+                  hiddenValue={"Select RAM"}
                   optionsValue={["8GB", "16GB", "32GB", "64GB"]}
                 />
                 <Select
                   name={"storage"}
                   title={"Storage"}
                   id={"product-storage"}
-                  hiddenValue={"--Select Storage--"}
+                  hiddenValue={"Storage Type"}
                   optionsValue={[
                     "256GB SSD",
                     "512GB SSD",
@@ -323,23 +319,23 @@ export default function AddProduct() {
                 name={"stockStatus"}
                 title={"Stock status"}
                 id={"product-stock-status"}
-                hiddenValue={"--Select Stock Status--"}
+                hiddenValue={"Stock Status"}
                 optionsValue={["In stock", "Out of stock"]}
               />
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="text-gray-500 grid md:grid-cols-2 gap-4">
                 <Select
                   name={"disk"}
                   title={"Disk type"}
                   id={"product-drive"}
-                  hiddenValue={"--Select Disk Type--"}
+                  hiddenValue={"Disk Type"}
                   optionsValue={["SSD (Solid State Drive)", "Hard Disk"]}
                 />
                 <Select
                   name={"type"}
                   title={"Product type"}
                   id={"laptop-type"}
-                  hiddenValue={"--Select Type--"}
+                  hiddenValue={"Select Type"}
                   optionsValue={["Used", "New"]}
                 />
               </div>
@@ -349,7 +345,7 @@ export default function AddProduct() {
                   htmlFor="images"
                   className="text-sm text-gray-600 block mb-1"
                 >
-                  {isEdit ? "New images (optional)" : "Images (optional)"}
+                  {isEdit ? "New images (optional)" : "Images (Required)"}
                 </label>
                 <Controller
                   name="images"
@@ -380,7 +376,7 @@ export default function AddProduct() {
                 name={"category"}
                 title={"Category"}
                 id={"product-category"}
-                hiddenValue={"--Select Category--"}
+                hiddenValue={"Category"}
                 optionsValue={["Normal", "Moderate", "Gaming", "High Performance"]}
               />
 
@@ -391,9 +387,7 @@ export default function AddProduct() {
                       Detailed specifications
                     </h3>
                     <p className="text-xs text-gray-500 mt-0.5 max-w-xl">
-                      Optional rows appear under Specifications on the product page
-                      (similar to major laptop stores). Fill both label and value for
-                      each row.
+                      
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 shrink-0">
@@ -465,16 +459,14 @@ export default function AddProduct() {
                   className="text-sm text-gray-600"
                   htmlFor="product-description"
                 >
-                  Description
+                 <p className="font-semibold"> Description</p>
                 </label>
-                <p className="text-xs text-gray-500 mt-0.5 mb-1">
-                  Between 10 and 2000 characters (shown on the product page).
-                </p>
+               
                 <textarea
                   id="product-description"
                   rows={4}
-                  placeholder="Short summary for shoppers…"
-                  className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#112B54]"
+                  placeholder="Between 10 to 300 characters."
+                  className="w-full mt-1 px-4 py-3 rounded-xl border cursor-pointer  border-gray-300 focus:ring-2 focus:ring-[#112B54]"
                   {...register("description")}
                 />
                 {errors.description?.message && (
@@ -485,18 +477,31 @@ export default function AddProduct() {
               </div>
 
               <button
-                type="submit"
-                disabled={status.kind === "loading" || !editReady}
-                className="w-full py-3 rounded-xl bg-linear-to-r from-[#112B54] to-blue-600 text-white font-semibold hover:opacity-90 transition shadow-md disabled:opacity-60"
-              >
-                {status.kind === "loading"
-                  ? isEdit
-                    ? "Saving…"
-                    : "Uploading…"
-                  : isEdit
-                    ? "Save changes"
-                    : "Upload product"}
-              </button>
+  type="submit"
+  disabled={status.kind === "loading" || !editReady}
+  className="flex items-center justify-center w-full sm:w-1/4 cursor-pointer py-3 px-6 rounded-xl 
+             bg-linear-to-r from-[#112B54] to-blue-600 text-white font-semibold shadow-md
+             /* Enhanced Hover & Transition */
+             transition-all duration-300 ease-out
+             hover:-translate-y-1 hover:shadow-xl hover:brightness-110 hover:saturate-110
+             /* Click Feedback */
+             active:translate-y-0 active:scale-95 active:shadow-inner
+             /* Disabled State */
+             disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none"
+>
+  {status.kind === "loading" ? (
+    <>
+      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      {isEdit ? "Saving..." : "Uploading..."}
+    </>
+  ) : (
+    isEdit ? "Save changes" : "Upload product"
+  )}
+</button>
+
             </form>
           )}
         </div>

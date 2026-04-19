@@ -1,6 +1,17 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "$schema": "https://vercel.sh",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://orakitech-backend.onrender.com"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://orakitech-backend.onrender.com*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

@@ -222,12 +222,12 @@ export default function AdminLogin() {
                 {postSetupHint}
               </p>
             ) : null}
-            <p className="text-sm text-gray-600 mt-1 mb-6">
+            {/* <p className="text-sm text-gray-600 mt-1 mb-6">
               Credentials are checked against the{" "}
               <strong>Admin</strong> collection in MongoDB (password is stored
               hashed). Session uses a JWT signed with{" "}
               <code className="rounded bg-gray-100 px-1 text-xs">ADMIN_JWT_SECRET</code>.
-            </p>
+            </p> */}
             {error ? (
               <p className="mb-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
                 {error}

@@ -283,15 +283,7 @@ export default function Card() {
             <p className="text-sm text-gray-600 text-start mb-1">
               Brand: <span className="font-medium text-gray-900">{item.brand}</span>
             </p>
-            {inStock ? (
-              <span className=" rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-semibold text-emerald-900">
-                In stock
-              </span>
-            ) : (
-              <span className="rounded-full bg-gray-200 px-3 py-0.5 text-xs font-semibold text-gray-900">
-                Out of stock
-              </span>
-            )}
+           
             
           
             <ul className="mb-6 mt-4 space-y-2 text-sm text-gray-700">
@@ -333,6 +325,15 @@ export default function Card() {
             </p>
            
             <div className="flex flex-wrap items-center gap-3 mb-4">
+            {inStock ? (
+              <span className=" rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-semibold text-emerald-900">
+                In stock
+              </span>
+            ) : (
+              <span className="rounded-full bg-gray-200 px-3 py-0.5 text-xs font-semibold text-gray-900">
+                Out of stock
+              </span>
+            )}
               <div className="flex items-center gap-0.5 text-amber-400">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <FaStar

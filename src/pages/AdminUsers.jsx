@@ -112,15 +112,11 @@ export default function AdminUsers() {
     <section className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-[#112B54]">Admin users</h1>
-        <p className="text-sm text-gray-600">
-          Accounts are stored in the <strong>admins</strong> MongoDB collection.
-          The <strong>primary</strong> admin (first created) cannot be deleted;
-          other admins can be removed here.
-        </p>
+        
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h2 className="font-semibold mb-3">You</h2>
+        <h2 className="font-semibold mb-3">Owner</h2>
         <dl className="space-y-2 text-sm text-gray-700">
           <div className="flex gap-2">
             <dt className="w-28 shrink-0 text-gray-500">Display</dt>
@@ -140,7 +136,7 @@ export default function AdminUsers() {
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h2 className="font-semibold mb-3">All admins in database</h2>
+        <h2 className="font-semibold mb-3">All admins</h2>
         {deleteError ? (
           <p className="mb-3 text-sm text-red-700" role="alert">
             {deleteError}
@@ -177,7 +173,7 @@ export default function AdminUsers() {
                   </span>
                 </div>
                 {a.isPrimary ? (
-                  <span className="text-xs text-gray-400">Protected</span>
+                  <span className="text-xs text-gray-400">Owner</span>
                 ) : (
                   <button
                     type="button"
@@ -201,7 +197,7 @@ export default function AdminUsers() {
         className="rounded-xl border border-gray-200 bg-white p-5 grid md:grid-cols-2 gap-4"
       >
         <h2 className="md:col-span-2 font-semibold text-[#112B54]">
-          Add new admin (saved to MongoDB)
+          Add new admin 
         </h2>
         {formStatus.message ? (
           <p

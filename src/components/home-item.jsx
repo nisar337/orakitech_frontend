@@ -15,18 +15,13 @@ function listingImage(listing) {
 
 export default function Laptops({ laptopData }) {
   return (
-    <div
-      className="grid justify-center gap-6 sm:gap-7"
-      style={{
-        gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 320px))",
-      }}
-    >
+    <div className="grid justify-center gap-4 sm:gap-6 md:gap-7 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       {laptopData && laptopData.length
         ? laptopData.map((data, idx) => {
             const { url, alt } = listingImage(data);
             return (
               <Link
-                className="group flex h-full max-w-[320px] flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-white text-left shadow-sm ring-1 ring-black/[0.03] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/80 hover:shadow-xl hover:ring-blue-100/40 sm:max-w-none"
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/90 bg-white text-left shadow-sm ring-1 ring-black/[0.03] transition-all duration-300 hover:-translate-y-1 hover:border-blue-200/80 hover:shadow-xl hover:ring-blue-100/40"
                 to={`/${data.slug}`}
                 key={data._id}
                 style={{ animation: `fadeIn .35s ease-out ${idx * 35}ms both` }}

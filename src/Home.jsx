@@ -98,7 +98,7 @@ export default function Home() {
             </h2>
             <p className="text-sm text-gray-500">Choose one to filter products</p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 grid-cols-2 xl:grid-cols-4">
             {categoryCards.map((card) => (
               <Link
                 key={card.key}

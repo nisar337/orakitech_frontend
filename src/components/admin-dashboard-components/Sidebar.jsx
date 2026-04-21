@@ -14,7 +14,7 @@ const menu = [
   ["Messages", "/admin/messages"],
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const [orderCount, setOrderCount] = useState(0);
 
   useEffect(() => {
@@ -38,8 +38,8 @@ export default function Sidebar() {
     };
   }, []);
 
-  return (
-    <div className="w-64 bg-[#112B54] text-white p-5 hidden md:block">
+  const sidebarContent = (
+    <div className="w-64 bg-[#112B54] text-white p-5">
       <Link to="/admin" className="block text-xl font-bold mb-8 hover:opacity-90">
         ORAKITECH
       </Link>
@@ -49,6 +49,7 @@ export default function Sidebar() {
           <li key={to}>
             <Link
               to={to}
+              onClick={onClose}
               className="flex items-center justify-between p-2 text-left rounded-lg hover:bg-white/10"
             >
               <span>{label}</span>
@@ -62,5 +63,24 @@ export default function Sidebar() {
         ))}
       </ul>
     </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile Sidebar Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+          <div className="relative">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

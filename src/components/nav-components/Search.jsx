@@ -25,11 +25,11 @@ export default function Search() {
     <form key={location.search} onSubmit={onSubmit} className="contents">
       <label
         htmlFor="search"
-        className="flex justify-center items-center gap-5 bg-white w-120 border rounded-3xl px-4 py-2"
+        className="flex justify-center items-center gap-2 md:gap-5 bg-white w-full border rounded-3xl px-4 py-2 shadow-sm hover:shadow-md transition-shadow"
       >
-        <BsSearch className="text-black" />
+        <BsSearch className="text-black text-sm md:text-base" />
         <input
-          className="text-black outline-0 w-100"
+          className="text-black outline-0 flex-1 text-sm md:text-base"
           type="search"
           name="search"
           id="search"

@@ -44,8 +44,8 @@ export default function Shop() {
   }
 
   return (
-    <main className="mx-6 my-5 md:mx-10 animate-[fadeIn_.4s_ease-out]">
-      <div className="flex flex-wrap gap-3 justify-between py-5 px-5 rounded-2xl mb-5 bg-linear-to-r from-[#f3f2fa] via-white to-[#edf3ff] shadow-sm border border-[#e6e9f5]">
+    <main className="  mx-6 my-5 md:mx-10 animate-[fadeIn_.4s_ease-out] ">
+      <div className=" flex  flex-wrap gap-3 justify-between py-5 px-5 rounded-2xl mb-5 bg-linear-to-r from-[#f3f2fa] via-white to-[#edf3ff] shadow-sm border border-[#e6e9f5]">
         <div>
           <h1 className="text-left text-2xl md:text-4xl font-semibold text-[#112B54]">
             {heading}

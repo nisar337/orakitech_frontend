@@ -120,19 +120,19 @@ export default function AdminAnalytics() {
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <p className="text-sm text-gray-500">Total revenue</p>
-                <p className="mt-3 text-2xl font-bold text-[#112B54]">
+                <p className="mt-3 text-1xl font-bold text-[#112B54]">
                   {formatPkrFromUsd(stats.totalRevenue)}
                 </p>
               </div>
               <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <p className="text-sm text-gray-500">Total orders</p>
-                <p className="mt-3 text-2xl font-bold text-[#112B54]">
+                <p className="mt-3 text-1xl font-bold text-[#112B54]">
                   {stats.totalOrders}
                 </p>
               </div>
               <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <p className="text-sm text-gray-500">Avg. order value</p>
-                <p className="mt-3 text-2xl font-bold text-[#112B54]">
+                <p className="mt-3 text-1xl font-bold text-[#112B54]">
                   {formatPkrFromUsd(stats.averageOrderValue)}
                 </p>
               </div>

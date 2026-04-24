@@ -40,7 +40,7 @@ export default function StatsCards() {
           className="bg-white p-5 rounded-xl shadow border"
         >
           <p className="text-gray">{s.title}</p>
-          <h2 className="text-2xl font-bold text-[#112B54]">
+          <h2 className="text-1xl font-bold text-[#112B54]">
             {s.value}
           </h2>
         </div>

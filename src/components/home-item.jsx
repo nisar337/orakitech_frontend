@@ -30,6 +30,8 @@ export default function Laptops({ laptopData }) {
                   <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-blue-50/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   {url ? (
                     <img
+                      loading="lazy"
+                      decoding="async"
                       className="relative z-[1] max-h-full w-full max-w-[240px] object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-[1.04]"
                       src={url}
                       alt={alt}

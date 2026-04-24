@@ -14,6 +14,35 @@ import { formatPkrFromUsd } from "./utils/currency.js";
 import OrderSuccessToast from "./components/OrderSuccessToast.jsx";
 import ProductEngagement from "./components/ProductEngagement.jsx";
 
+// Simple cache for product data with expiration
+const productCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+function getCachedProduct(slug) {
+  const cached = productCache.get(slug);
+  if (!cached) return null;
+  
+  if (Date.now() - cached.timestamp > CACHE_DURATION) {
+    productCache.delete(slug);
+    return null;
+  }
+  
+  return cached.data;
+}
+
+function setCachedProduct(slug, data) {
+  productCache.set(slug, {
+    data,
+    timestamp: Date.now()
+  });
+  
+  // Limit cache size to prevent memory leaks
+  if (productCache.size > 50) {
+    const oldestKey = productCache.keys().next().value;
+    productCache.delete(oldestKey);
+  }
+}
+
 const EMPTY_BUYER = {
   fullName: "",
   email: "",
@@ -51,6 +80,7 @@ export default function Card() {
   const [showBuyerForm, setShowBuyerForm] = useState(false);
   const [buyer, setBuyer] = useState(EMPTY_BUYER);
   const [reviewStats, setReviewStats] = useState({ average: null, count: 0 });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!item?._id) return;
@@ -78,26 +108,49 @@ export default function Card() {
 
   useEffect(() => {
     if (!queryParams) return;
-    let cancelled = false;
-    (async () => {
-      const res = await fetch(
-        `${API_BASE}/api/home/${encodeURIComponent(queryParams)}`
-      );
-      const data = await res.json().catch(() => null);
-      if (cancelled) return;
-      if (!res.ok || !data || typeof data !== "object" || !data.title) {
-        setItem(null);
-        setReviewStats({ average: null, count: 0 });
-        return;
-      }
-      setItem(data);
-      const urls = galleryFromListing(data.images);
+    
+    // Check cache first
+    const cachedData = getCachedProduct(queryParams);
+    if (cachedData) {
+      setItem(cachedData);
+      const urls = galleryFromListing(cachedData.images);
       setGallery(urls.length ? urls : fallbackGallery);
       setActiveImg(0);
       setCount(1);
       setShowBuyerForm(false);
       setBuyer(EMPTY_BUYER);
       setOrderPlacedPopup(false);
+      setLoading(false);
+      return;
+    }
+    
+    let cancelled = false;
+    setLoading(true);
+    (async () => {
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/home/${encodeURIComponent(queryParams)}`
+        );
+        const data = await res.json().catch(() => null);
+        if (cancelled) return;
+        if (!res.ok || !data || typeof data !== "object" || !data.title) {
+          setItem(null);
+          setReviewStats({ average: null, count: 0 });
+          return;
+        }
+        // Cache the successful response
+        setCachedProduct(queryParams, data);
+        setItem(data);
+        const urls = galleryFromListing(data.images);
+        setGallery(urls.length ? urls : fallbackGallery);
+        setActiveImg(0);
+        setCount(1);
+        setShowBuyerForm(false);
+        setBuyer(EMPTY_BUYER);
+        setOrderPlacedPopup(false);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     })();
     return () => {
       cancelled = true;
@@ -183,10 +236,19 @@ export default function Card() {
   if (!item?.title) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 text-center text-gray-600">
-        <p className="text-lg">Product not found.</p>
-        <Link to="/" className="mt-4 inline-block text-blue-600 underline">
-          Back to shop
-        </Link>
+        {loading ? (
+          <div className="flex flex-col items-center space-y-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p className="text-lg">Loading product details...</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-lg">Product not found.</p>
+            <Link to="/" className="mt-4 inline-block text-blue-600 underline">
+              Back to shop
+            </Link>
+          </>
+        )}
       </div>
     );
   }

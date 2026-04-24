@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { API_BASE } from "../../config/api.js";
 import { formatPkrFromUsd } from "../../utils/currency.js";
+import { matchesOrderSearch } from "../../utils/adminSearch.js";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -9,6 +10,14 @@ export default function AdminOrders() {
   const [savingId, setSavingId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [draft, setDraft] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  const searchQuery = String(searchParams.get("search") || "").trim();
+
+  const filteredOrders = useMemo(
+    () => orders.filter((order) => matchesOrderSearch(order, searchQuery)),
+    [orders, searchQuery]
+  );
 
   async function loadOrders() {
     try {
@@ -128,6 +137,10 @@ export default function AdminOrders() {
       )}
       {!orders.length && !error ? (
         <p className="text-gray-500 text-sm">No orders yet.</p>
+      ) : !filteredOrders.length && !!searchQuery ? (
+        <p className="text-gray-500 text-sm">
+          No orders match "{searchQuery}".
+        </p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
           <table className="w-full text-left text-sm min-w-[720px]">
@@ -143,7 +156,7 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((o) => (
+              {filteredOrders.map((o) => (
                 <tr key={o._id} className="border-t border-gray-100 align-top">
                   <td className="px-4 py-3 whitespace-nowrap">
                     {o.createdAt

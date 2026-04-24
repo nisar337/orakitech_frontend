@@ -1,16 +1,25 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useLaptopData } from "../../hooks/useLaptopData.js";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
 import { formatPkrFromUsd } from "../../utils/currency.js";
+import { matchesProductSearch } from "../../utils/adminSearch.js";
 
 export default function ProductsTable() {
   const { adminFetch } = useAdminAuth();
   const { laptopData, refreshLaptopData } = useLaptopData();
+  const [searchParams] = useSearchParams();
   const [deletingId, setDeletingId] = useState(null);
   const [message, setMessage] = useState(null);
   const [messageKind, setMessageKind] = useState("error");
+
+  const searchQuery = String(searchParams.get("search") || "").trim();
+
+  const filteredProducts = useMemo(
+    () => laptopData.filter((product) => matchesProductSearch(product, searchQuery)),
+    [laptopData, searchQuery]
+  );
 
   useEffect(() => {
     if (!message || messageKind !== "success") return;
@@ -63,6 +72,10 @@ export default function ProductsTable() {
 
       {!laptopData.length ? (
         <p className="text-gray-500 text-sm">No products yet. Add one from Add product.</p>
+      ) : !filteredProducts.length ? (
+        <p className="text-gray-500 text-sm">
+          No matching products found for "{searchQuery}".
+        </p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-left min-w-[640px]">
@@ -78,7 +91,7 @@ export default function ProductsTable() {
               </tr>
             </thead>
             <tbody>
-              {laptopData.map((p) => (
+              {filteredProducts.map((p) => (
                 <tr key={p._id} className="border-t text-sm">
                   <td className="py-2 pr-2">
                     <Link

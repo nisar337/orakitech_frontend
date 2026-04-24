@@ -1,115 +1,206 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createRoot } from "react-dom/client";
+import { lazy, Suspense } from "react";
 import "./index.css";
 import App from "./App.jsx";
-import Error from "./Error.jsx";
-import Home from "./Home.jsx";
-import Shop from "./Shop.jsx";
-import Card from "./card-components.jsx";
-import Contact from "./Contact.jsx";
-import About from "./About.jsx";
-import AdminLayout from "./AdminLayout.jsx";
-import Dashboard from "./components/admin-dashboard-components/Dashboard.jsx";
-import AddProduct from "./components/admin-dashboard-components/AddProduct.jsx";
-import AdminProducts from "./components/admin-dashboard-components/AdminProducts.jsx";
-import AdminPlaceholder from "./components/admin-dashboard-components/AdminPlaceholder.jsx";
-import AdminOrders from "./components/admin-dashboard-components/AdminOrders.jsx";
-import AdminLogin from "./pages/AdminLogin.jsx";
-import AdminUsers from "./pages/AdminUsers.jsx";
-import AdminCategories from "./pages/AdminCategories.jsx";
 import ProtectedAdminRoute from "./components/admin-dashboard-components/ProtectedAdminRoute.jsx";
 import { LaptopDataProvider } from "./context/LaptopDataProvider.jsx";
 import { CartProvider } from "./context/CartProvider.jsx";
 import { AdminAuthProvider } from "./context/AdminAuthProvider.jsx";
 import { UserAuthProvider } from "./context/UserAuthProvider.jsx";
-import Cart from "./pages/Cart.jsx";
+
+const ErrorPage = lazy(() => import("./Error.jsx"));
+const Home = lazy(() => import("./Home.jsx"));
+const Shop = lazy(() => import("./Shop.jsx"));
+const Card = lazy(() => import("./card-components.jsx"));
+const Contact = lazy(() => import("./Contact.jsx"));
+const About = lazy(() => import("./About.jsx"));
+const Cart = lazy(() => import("./pages/Cart.jsx"));
+const AdminLayout = lazy(() => import("./AdminLayout.jsx"));
+const Dashboard = lazy(() => import("./components/admin-dashboard-components/Dashboard.jsx"));
+const AddProduct = lazy(() => import("./components/admin-dashboard-components/AddProduct.jsx"));
+const AdminProducts = lazy(() => import("./components/admin-dashboard-components/AdminProducts.jsx"));
+const AdminPlaceholder = lazy(() => import("./components/admin-dashboard-components/AdminPlaceholder.jsx"));
+const AdminOrders = lazy(() => import("./components/admin-dashboard-components/AdminOrders.jsx"));
+const AdminAnalytics = lazy(() => import("./pages/AdminAnalytics.jsx"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin.jsx"));
+const AdminUsers = lazy(() => import("./pages/AdminUsers.jsx"));
+const AdminCategories = lazy(() => import("./pages/AdminCategories.jsx"));
+
+function PageFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white p-6 text-base font-medium text-gray-700">
+      Loading page...
+    </div>
+  );
+}
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <Error />,
+    errorElement: (
+      <Suspense fallback={<PageFallback />}>
+        <ErrorPage />
+      </Suspense>
+    ),
     children: [
       {
         index: true,
-        element: <Home />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <Home />
+          </Suspense>
+        ),
       },
       {
         path: "shop",
-        element: <Shop />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <Shop />
+          </Suspense>
+        ),
       },
       {
         path: "contact",
-        element: <Contact />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <Contact />
+          </Suspense>
+        ),
       },
       {
         path: "about",
-        element: <About />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <About />
+          </Suspense>
+        ),
       },
       {
         path: "cart",
-        element: <Cart />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <Cart />
+          </Suspense>
+        ),
       },
       {
         path: ":queryParams",
-        element: <Card />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <Card />
+          </Suspense>
+        ),
       },
     ],
   },
   {
     path: "/admin/login",
-    element: <AdminLogin />,
+    element: (
+      <Suspense fallback={<PageFallback />}>
+        <AdminLogin />
+      </Suspense>
+    ),
   },
   {
     element: <ProtectedAdminRoute />,
     children: [
       {
         path: "/admin",
-        element: <AdminLayout />,
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <AdminLayout />
+          </Suspense>
+        ),
         children: [
           {
             index: true,
-            element: <Dashboard />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <Dashboard />
+              </Suspense>
+            ),
           },
           {
             path: "dashboard",
-            element: <Dashboard />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <Dashboard />
+              </Suspense>
+            ),
           },
           {
             path: "add",
-            element: <AddProduct />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AddProduct />
+              </Suspense>
+            ),
           },
           {
             path: "edit/:id",
-            element: <AddProduct />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AddProduct />
+              </Suspense>
+            ),
           },
           {
             path: "products",
-            element: <AdminProducts />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminProducts />
+              </Suspense>
+            ),
           },
           {
             path: "orders",
-            element: <AdminOrders />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminOrders />
+              </Suspense>
+            ),
           },
           {
             path: "users",
-            element: <AdminUsers />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminUsers />
+              </Suspense>
+            ),
           },
           {
             path: "categories",
-            element: <AdminCategories />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminCategories />
+              </Suspense>
+            ),
           },
           {
             path: "analytics",
-            element: <AdminPlaceholder title="Analytics" />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminAnalytics />
+              </Suspense>
+            ),
           },
           {
             path: "reviews",
-            element: <AdminPlaceholder title="Reviews" />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminPlaceholder title="Reviews" />
+              </Suspense>
+            ),
           },
           {
             path: "messages",
-            element: <AdminPlaceholder title="Messages" />,
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminPlaceholder title="Messages" />
+              </Suspense>
+            ),
           },
         ],
       },
@@ -122,7 +213,7 @@ createRoot(document.getElementById("root")).render(
     <AdminAuthProvider>
       <CartProvider>
         <LaptopDataProvider>
-          <RouterProvider router={router}></RouterProvider>
+          <RouterProvider router={router} />
         </LaptopDataProvider>
       </CartProvider>
     </AdminAuthProvider>

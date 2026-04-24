@@ -32,6 +32,7 @@ export default function AddProduct() {
   const [status, setStatus] = useState({ kind: "idle", message: "" });
   const [loadError, setLoadError] = useState(null);
   const [existingImageUrls, setExistingImageUrls] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [editReady, setEditReady] = useState(() => !isEdit);
 
   const methods = useForm({
@@ -68,6 +69,7 @@ export default function AddProduct() {
     if (!isEdit) {
       queueMicrotask(() => {
         setExistingImageUrls([]);
+        setPreviewUrls([]);
         setLoadError(null);
         setEditReady(true);
         reset({
@@ -136,6 +138,12 @@ export default function AddProduct() {
       cancelled = true;
     };
   }, [isEdit, editId, reset]);
+
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls]);
 
   async function handleSubmitForm(data) {
     setStatus({ kind: "loading", message: isEdit ? "Saving…" : "Uploading…" });
@@ -361,7 +369,24 @@ export default function AddProduct() {
                       accept="image/*"
                       onBlur={onBlur}
                       className="w-full mt-1 px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#112B54]"
-                      onChange={(e) => onChange(e.target.files)}
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        if (files && files.length > 0) {
+                          const urls = Array.from(files).map((file) =>
+                            URL.createObjectURL(file)
+                          );
+                          setPreviewUrls((current) => {
+                            current.forEach((url) => URL.revokeObjectURL(url));
+                            return urls;
+                          });
+                        } else {
+                          setPreviewUrls((current) => {
+                            current.forEach((url) => URL.revokeObjectURL(url));
+                            return [];
+                          });
+                        }
+                        onChange(files);
+                      }}
                     />
                   )}
                 />
@@ -369,6 +394,22 @@ export default function AddProduct() {
                   <p className="text-red-500 text-sm text-left mt-1">
                     {errors.images.message}
                   </p>
+                )}
+
+                {previewUrls.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 mb-2">Image preview</p>
+                    <div className="flex flex-wrap gap-3">
+                      {previewUrls.map((src, index) => (
+                        <img
+                          key={`${src}-${index}`}
+                          src={src}
+                          alt={`Preview ${index + 1}`}
+                          className="h-24 w-24 rounded-lg border object-cover"
+                        />
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
 

@@ -7,7 +7,7 @@ import TopProducts from "./TopProducts";
 
 export default function Dashboard() {
   return (
-        <div className="space-y-6">
+        <div className="space-y-2">
           <StatsCards />
 
           <div className="grid lg:grid-cols-3 gap-6">

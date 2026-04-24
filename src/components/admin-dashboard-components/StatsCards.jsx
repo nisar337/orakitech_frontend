@@ -39,8 +39,8 @@ export default function StatsCards() {
           key={i}
           className="bg-white p-5 rounded-xl shadow border"
         >
-          <p className="text-gray-500">{s.title}</p>
-          <h2 className="text-xl font-bold text-[#112B54]">
+          <p className="text-gray">{s.title}</p>
+          <h2 className="text-2xl font-bold text-[#112B54]">
             {s.value}
           </h2>
         </div>

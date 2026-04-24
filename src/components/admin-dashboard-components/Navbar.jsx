@@ -1,11 +1,18 @@
 import { FaBell } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
 
 export default function Navbar() {
   const { displayName, logout } = useAdminAuth();
   const [orderCount, setOrderCount] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
+
+  useEffect(() => {
+    setSearchValue(searchParams.get("search") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,12 +35,26 @@ export default function Navbar() {
     };
   }, []);
 
+  function updateSearch(value) {
+    const next = value || "";
+    setSearchValue(next);
+    const nextParams = new URLSearchParams(searchParams);
+    if (!next.trim()) {
+      nextParams.delete("search");
+    } else {
+      nextParams.set("search", next);
+    }
+    setSearchParams(nextParams, { replace: true });
+  }
+
   return (
-    <div className="bg-white p-4 flex flex-wrap justify-between items-center gap-3 shadow-sm">
+    <div className="bg-white p-4 flex  flex-wrap justify-between items-center gap-3 shadow-sm">
       <input
         type="text"
-        placeholder="Search anything..."
-        className="px-4 py-2 border rounded-lg w-full md:w-1/2"
+        placeholder="Search by title, brand, price, customer, or order..."
+        value={searchValue}
+        onChange={(event) => updateSearch(event.target.value)}
+        className="px-4 py-2 border  rounded-lg w-full md:w-1/2"
       />
 
       <div className="flex items-center gap-4">

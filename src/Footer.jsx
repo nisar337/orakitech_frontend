@@ -19,10 +19,10 @@ export default function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-white/90">
               Useful Links
             </h3>
-            <nav className="mt-4 space-y-3 text-sm text-white/80">
+            <nav className="mt-4 space-y-0 text-sm text-white/80">
               <Link
                 to="/"
-                className="group flex items-center gap-2 rounded-lg py-1 pr-2 transition-all duration-200 hover:text-white hover:translate-x-0.5"
+                className="group flex items-center gap-2 rounded-lg py-2 pr-2 transition-all duration-200 hover:text-white hover:translate-x-0.5"
               >
                 <HiHome className="h-4 w-4 shrink-0 text-white/75 transition-colors duration-200 group-hover:text-white" />
                 <span className="underline-offset-4 decoration-white/35 transition-all duration-200 group-hover:underline group-hover:decoration-white/70">

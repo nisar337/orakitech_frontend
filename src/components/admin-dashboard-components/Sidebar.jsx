@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { HiHome, HiShoppingBag, HiPlusCircle, HiChartPie, HiUsers, HiCube, HiClipboardList, HiChatAlt2, HiShieldCheck } from "react-icons/hi";
 import { API_BASE } from "../../config/api.js";
+import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 
 const menu = [
   ["Dashboard", "/admin"],
@@ -30,6 +31,7 @@ const iconMap = {
 export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
   const [orderCount, setOrderCount] = useState(0);
+  const { isPrimary } = useAdminAuth();
 
   useEffect(() => {
     let cancelled = false;
@@ -63,7 +65,12 @@ export default function Sidebar({ isOpen, onClose }) {
 
 
       <ul className="space-y-3">
-        {menu.map(([label, to]) => {
+        {menu
+          .filter(([label, to]) => {
+            if (to === "/admin/users" && !isPrimary) return false;
+            return true;
+          })
+          .map(([label, to]) => {
           const isActive = location.pathname === to;
           const Icon = iconMap[to];
           return (

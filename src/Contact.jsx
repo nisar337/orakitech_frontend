@@ -38,7 +38,17 @@ export default function ContactUs() {
           </div>
 
           {/* Decorative Box */}
-          <div className="hidden md:block mt-10 h-40 bg-linear-to-r from-[#112B54] to-blue-500 rounded-2xl shadow-lg"></div>
+          <div className="hidden md:flex mt-10 h-40 bg-linear-to-r from-[#112B54] to-blue-500 rounded-2xl shadow-lg p-6">
+            <div className="text-white">
+              <p className="text-sm font-semibold uppercase tracking-[0.12em] text-blue-50/90">
+                Welcome to OrakiTech
+              </p>
+              <p className="mt-3 text-base leading-relaxed text-white/95">
+                Where great products meet fast support. Tell us what you need and we’ll
+                help you move forward with confidence.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Form Section */}

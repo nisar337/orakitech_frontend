@@ -3,7 +3,7 @@ import { API_BASE } from "../config/api.js";
 import { useAdminAuth } from "../hooks/useAdminAuth.js";
 
 export default function AdminUsers() {
-  const { username, fullName, displayName, adminFetch } = useAdminAuth();
+  const { username, fullName, displayName, avatarUrl, isPrimary, adminFetch } = useAdminAuth();
   const [admins, setAdmins] = useState([]);
   const [loadError, setLoadError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -33,8 +33,9 @@ export default function AdminUsers() {
   }, [adminFetch]);
 
   useEffect(() => {
+    if (!isPrimary) return;
     loadAdmins();
-  }, [loadAdmins]);
+  }, [loadAdmins, isPrimary]);
 
   function onFormChange(e) {
     const { name, value } = e.target;
@@ -128,22 +129,30 @@ export default function AdminUsers() {
         <div className="space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
             <h2 className="font-semibold mb-3">Owner</h2>
-            <dl className="grid gap-3 text-sm text-gray-700">
-              <div className="grid grid-cols-[110px_1fr] items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                <dt className="text-gray-500">Display</dt>
-                <dd className="font-medium text-[#112B54]">{displayName}</dd>
-              </div>
-              <div className="grid grid-cols-[110px_1fr] items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                <dt className="text-gray-500">Username</dt>
-                <dd>{username || "—"}</dd>
-              </div>
-              {fullName ? (
-                <div className="grid grid-cols-[110px_1fr] items-center gap-3 rounded-2xl bg-slate-50 p-3">
-                  <dt className="text-gray-500">Full name</dt>
-                  <dd>{fullName}</dd>
+            <div className="flex items-center gap-4">
+              <img
+                src={
+                  avatarUrl ||
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    displayName || "Owner"
+                  )}&background=112B54&color=fff`
+                }
+                alt=""
+                className="h-14 w-14 rounded-2xl object-cover ring-1 ring-slate-200"
+              />
+              <dl className="grid gap-1 text-sm text-gray-700">
+                <div className="grid grid-cols-[90px_1fr] items-center gap-2">
+                  <dt className="text-gray-500">Name</dt>
+                  <dd className="font-medium text-[#112B54]">
+                    {fullName || displayName || "Owner"}
+                  </dd>
                 </div>
-              ) : null}
-            </dl>
+                <div className="grid grid-cols-[90px_1fr] items-center gap-2">
+                  <dt className="text-gray-500">Username</dt>
+                  <dd>{username || "—"}</dd>
+                </div>
+              </dl>
+            </div>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -170,17 +179,29 @@ export default function AdminUsers() {
                     className="rounded-3xl border border-slate-100 bg-slate-50 p-4 text-sm"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium text-[#112B54]">{a.username}</span>
+                      <div className="min-w-0 flex items-center gap-3">
+                        <img
+                          src={
+                            a.avatarUrl ||
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              a.fullName || a.username || "Admin"
+                            )}&background=0f172a&color=fff`
+                          }
+                          alt=""
+                          className="h-10 w-10 rounded-2xl object-cover ring-1 ring-slate-200"
+                        />
+                        <div className="space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-medium text-[#112B54]">{a.username}</span>
                           {a.isPrimary ? (
                             <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">
                               Primary
                             </span>
                           ) : null}
+                          </div>
+                          <p className="text-gray-600">{a.fullName || "—"}</p>
+                          <p className="text-gray-500">{a.email || "—"}</p>
                         </div>
-                        <p className="text-gray-600">{a.fullName || "—"}</p>
-                        <p className="text-gray-500">{a.email || "—"}</p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-sm">
                         <span className={
@@ -211,7 +232,8 @@ export default function AdminUsers() {
           </div>
         </div>
 
-        <form
+        {isPrimary ? (
+          <form
           onSubmit={onCreateAdmin}
           className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-4"
         >
@@ -285,6 +307,15 @@ export default function AdminUsers() {
             </button>
           </div>
         </form>
+        ) : (
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-3 text-sm text-gray-700">
+            <h2 className="font-semibold text-[#112B54]">Limited access</h2>
+            <p>
+              Only the primary owner can manage other admin accounts. Contact the owner if you
+              need changes to admin access.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

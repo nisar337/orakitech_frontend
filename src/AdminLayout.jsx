@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./components/admin-dashboard-components/Sidebar";
 import Navbar from "./components/admin-dashboard-components/Navbar";
 import { HiMenu } from "react-icons/hi";
@@ -7,6 +7,7 @@ import Modal from "./components/ui/Modal.jsx";
 
 export default function AdminLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [flashText, setFlashText] = useState("");
   const [flashModal, setFlashModal] = useState(null);
   const lastFlashKey = useRef("");
@@ -40,6 +41,9 @@ export default function AdminLayout() {
       setFlashModal(normalized);
       setFlashText("");
     }
+
+    // Clear navigation state so refresh doesn't re-show the same popup/banner.
+    navigate(`${location.pathname}${location.search}`, { replace: true, state: {} });
   }, [location.key, location.state?.adminFlash]);
 
   useEffect(() => {

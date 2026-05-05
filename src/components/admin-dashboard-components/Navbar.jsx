@@ -17,6 +17,8 @@ export default function Navbar() {
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarBusy, setAvatarBusy] = useState(false);
   const [avatarError, setAvatarError] = useState("");
+  const [avatarSuccessOpen, setAvatarSuccessOpen] = useState(false);
+  const [avatarSuccessUrl, setAvatarSuccessUrl] = useState("");
 
   useEffect(() => {
     setSearchValue(searchParams.get("search") || "");
@@ -83,9 +85,10 @@ export default function Navbar() {
       }
       if (data?.user?.avatarUrl) {
         updateUser({ avatarUrl: data.user.avatarUrl });
+        setAvatarSuccessUrl(data.user.avatarUrl);
+        setAvatarSuccessOpen(true);
       }
       setAvatarFile(null);
-      setProfileOpen(false);
     } catch (e) {
       setAvatarError(e?.message || "Could not upload avatar.");
     } finally {
@@ -184,10 +187,15 @@ export default function Navbar() {
           />
           <div className="min-w-0">
             <p className="text-sm font-semibold text-[#112B54]">
-              {fullName || username || "Admin"}
+              {fullName || "—"}
             </p>
-            <p className="mt-0.5 text-sm text-gray-600 break-all">
-              {email || "—"}
+            <p className="mt-0.5 text-sm text-gray-700">
+              <span className="font-medium">Username:</span>{" "}
+              <span className="text-gray-600">{username || "—"}</span>
+            </p>
+            <p className="mt-0.5 text-sm text-gray-700 break-all">
+              <span className="font-medium">Email:</span>{" "}
+              <span className="text-gray-600">{email || "—"}</span>
             </p>
             <p className="mt-1 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
               {role || "Admin"}
@@ -210,13 +218,32 @@ export default function Navbar() {
             className="mt-2 block w-full text-sm text-gray-700 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200"
           />
           <p className="mt-2 text-xs text-gray-500">
-            JPG/PNG/WEBP up to 4MB.
+            JPG/PNG/WEBP/HEIC up to 8MB.
           </p>
           {avatarError ? (
             <p className="mt-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
               {avatarError}
             </p>
           ) : null}
+        </div>
+      </Modal>
+
+      <Modal
+        open={avatarSuccessOpen}
+        title="Updated"
+        intent="success"
+        placement="top"
+        closeOnBackdrop
+        onClose={() => setAvatarSuccessOpen(false)}
+        primaryAction={{ label: "OK", onClick: () => setAvatarSuccessOpen(false) }}
+      >
+        <div className="flex items-center gap-3">
+          <img
+            src={avatarSuccessUrl || avatarUrl || shownAvatar}
+            alt=""
+            className="h-10 w-10 rounded-xl object-cover ring-1 ring-emerald-200"
+          />
+          <p className="text-sm text-gray-700">Profile picture updated successfully.</p>
         </div>
       </Modal>
     </div>

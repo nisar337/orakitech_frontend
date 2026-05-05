@@ -3,27 +3,56 @@ import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./components/admin-dashboard-components/Sidebar";
 import Navbar from "./components/admin-dashboard-components/Navbar";
 import { HiMenu } from "react-icons/hi";
+import Modal from "./components/ui/Modal.jsx";
 
 export default function AdminLayout() {
   const location = useLocation();
-  const [flash, setFlash] = useState("");
+  const [flashText, setFlashText] = useState("");
+  const [flashModal, setFlashModal] = useState(null);
   const lastFlashKey = useRef("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const raw = location.state?.adminFlash;
-    if (typeof raw !== "string" || !raw.trim()) return;
-    const token = `${location.key}:${raw.trim()}`;
+    if (raw == null) return;
+
+    const normalized =
+      typeof raw === "string"
+        ? { type: "success", message: raw.trim(), autoCloseMs: 4500 }
+        : typeof raw === "object" && typeof raw.message === "string"
+          ? {
+              type: raw.type || "default",
+              message: raw.message.trim(),
+              autoCloseMs: Number.isFinite(raw.autoCloseMs) ? raw.autoCloseMs : 2500,
+            }
+          : null;
+
+    if (!normalized?.message) return;
+
+    const token = `${location.key}:${normalized.type}:${normalized.message}`;
     if (token === lastFlashKey.current) return;
     lastFlashKey.current = token;
-    setFlash(raw.trim());
+
+    if (typeof raw === "string") {
+      setFlashText(normalized.message);
+      setFlashModal(null);
+    } else {
+      setFlashModal(normalized);
+      setFlashText("");
+    }
   }, [location.key, location.state?.adminFlash]);
 
   useEffect(() => {
-    if (!flash) return;
-    const t = setTimeout(() => setFlash(""), 4500);
+    if (!flashText) return;
+    const t = setTimeout(() => setFlashText(""), 4500);
     return () => clearTimeout(t);
-  }, [flash]);
+  }, [flashText]);
+
+  useEffect(() => {
+    if (!flashModal?.message) return;
+    const t = setTimeout(() => setFlashModal(null), flashModal.autoCloseMs || 2500);
+    return () => clearTimeout(t);
+  }, [flashModal]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -43,12 +72,26 @@ export default function AdminLayout() {
         <Navbar />
 
         <div className="p-4 md:p-6">
-          {flash ? (
+          <Modal
+            open={Boolean(flashModal?.message)}
+            title={flashModal?.type === "success" ? "Success" : undefined}
+            intent={flashModal?.type === "success" ? "success" : "default"}
+            placement="top"
+            onClose={() => setFlashModal(null)}
+            primaryAction={{
+              label: "OK",
+              onClick: () => setFlashModal(null),
+            }}
+          >
+            <p className="text-sm text-gray-700">{flashModal?.message}</p>
+          </Modal>
+
+          {flashText ? (
             <p
               className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-900 shadow-sm"
               role="status"
             >
-              {flash}
+              {flashText}
             </p>
           ) : null}
           <Outlet />

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AdminAuthContext } from "./admin-auth-context.js";
 import { API_BASE } from "../config/api.js";
 
@@ -14,9 +14,21 @@ function readSession() {
       token,
       username: user?.username || "",
       fullName: user?.fullName || "",
+      email: user?.email || "",
+      avatarUrl: user?.avatarUrl || "",
+      role: user?.role || "",
+      isPrimary: Boolean(user?.isPrimary),
     };
   } catch {
-    return { token: "", username: "", fullName: "" };
+    return {
+      token: "",
+      username: "",
+      fullName: "",
+      email: "",
+      avatarUrl: "",
+      role: "",
+      isPrimary: false,
+    };
   }
 }
 
@@ -25,11 +37,19 @@ export function AdminAuthProvider({ children }) {
   const [token, setToken] = useState(initial.token);
   const [username, setUsername] = useState(initial.username);
   const [fullName, setFullName] = useState(initial.fullName);
+  const [email, setEmail] = useState(initial.email);
+  const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
+  const [role, setRole] = useState(initial.role);
+  const [isPrimary, setIsPrimary] = useState(initial.isPrimary);
 
   const persistSession = useCallback((nextToken, user) => {
     setToken(nextToken);
     setUsername(user?.username || "");
     setFullName(user?.fullName || "");
+    setEmail(user?.email || "");
+    setAvatarUrl(user?.avatarUrl || "");
+    setRole(user?.role || (user?.isPrimary ? "Primary Admin" : "Admin"));
+    setIsPrimary(Boolean(user?.isPrimary));
     try {
       if (nextToken) {
         sessionStorage.setItem(TOKEN_KEY, nextToken);
@@ -38,6 +58,10 @@ export function AdminAuthProvider({ children }) {
           JSON.stringify({
             username: user?.username || "",
             fullName: user?.fullName || "",
+            email: user?.email || "",
+            avatarUrl: user?.avatarUrl || "",
+            role: user?.role || "",
+            isPrimary: Boolean(user?.isPrimary),
           })
         );
       } else {
@@ -57,6 +81,23 @@ export function AdminAuthProvider({ children }) {
     },
     [token]
   );
+
+  const refreshMe = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await adminFetch(`${API_BASE}/api/auth/admin/me`);
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.user) {
+        persistSession(token, data.user);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [adminFetch, persistSession, token]);
+
+  useEffect(() => {
+    refreshMe();
+  }, [refreshMe]);
 
   const login = useCallback(
     async (user, pass) => {
@@ -84,6 +125,22 @@ export function AdminAuthProvider({ children }) {
     [persistSession]
   );
 
+  const updateUser = useCallback(
+    (partial) => {
+      if (!token) return;
+      persistSession(token, {
+        username,
+        fullName,
+        email,
+        avatarUrl,
+        role,
+        isPrimary,
+        ...(partial || {}),
+      });
+    },
+    [token, persistSession, username, fullName, email, avatarUrl, role, isPrimary]
+  );
+
   const logout = useCallback(() => {
     persistSession("", null);
   }, [persistSession]);
@@ -93,13 +150,32 @@ export function AdminAuthProvider({ children }) {
       token,
       username,
       fullName,
+      email,
+      avatarUrl,
+      role: role || (isPrimary ? "Primary Admin" : "Admin"),
+      isPrimary,
       displayName: fullName || username || "Admin",
       isLoggedIn: Boolean(token),
       login,
       logout,
       adminFetch,
+      refreshMe,
+      updateUser,
     }),
-    [token, username, fullName, login, logout, adminFetch]
+    [
+      token,
+      username,
+      fullName,
+      email,
+      avatarUrl,
+      role,
+      isPrimary,
+      login,
+      logout,
+      adminFetch,
+      refreshMe,
+      updateUser,
+    ]
   );
 
   return (

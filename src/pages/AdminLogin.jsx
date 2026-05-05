@@ -26,6 +26,7 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [postSetupHint, setPostSetupHint] = useState("");
+  const [redirectAfterLogin, setRedirectAfterLogin] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,6 +63,22 @@ export default function AdminLogin() {
     };
   }, []);
 
+  if (redirectAfterLogin) {
+    return (
+      <Navigate
+        to={goTo}
+        replace
+        state={{
+          adminFlash: {
+            type: "success",
+            message: "Login Successful ✅",
+            autoCloseMs: 2500,
+          },
+        }}
+      />
+    );
+  }
+
   if (isLoggedIn) return <Navigate to="/admin" replace />;
 
   function onChange(e) {
@@ -84,10 +101,7 @@ export default function AdminLogin() {
         setError(result.message);
         return;
       }
-      navigate(goTo, {
-        replace: true,
-        state: { adminFlash: "Signed in successfully." },
-      });
+      setRedirectAfterLogin(true);
     } finally {
       setBusy(false);
     }

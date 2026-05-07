@@ -16,6 +16,9 @@ const Card = lazy(() => import("./card-components.jsx"));
 const Contact = lazy(() => import("./Contact.jsx"));
 const About = lazy(() => import("./About.jsx"));
 const Cart = lazy(() => import("./pages/Cart.jsx"));
+const AccountDashboard = lazy(() => import("./pages/AccountDashboard.jsx"));
+const MyOrders = lazy(() => import("./pages/MyOrders.jsx"));
+const EditProfile = lazy(() => import("./pages/EditProfile.jsx"));
 const AdminLayout = lazy(() => import("./AdminLayout.jsx"));
 const Dashboard = lazy(() => import("./components/admin-dashboard-components/Dashboard.jsx"));
 const AddProduct = lazy(() => import("./components/admin-dashboard-components/AddProduct.jsx"));
@@ -25,6 +28,7 @@ const AdminOrders = lazy(() => import("./components/admin-dashboard-components/A
 const AdminAnalytics = lazy(() => import("./pages/AdminAnalytics.jsx"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin.jsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.jsx"));
+const AdminCustomers = lazy(() => import("./pages/AdminCustomers.jsx"));
 const AdminCategories = lazy(() => import("./pages/AdminCategories.jsx"));
 
 function PageFallback() {
@@ -82,6 +86,30 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageFallback />}>
             <Cart />
+          </Suspense>
+        ),
+      },
+      {
+        path: "account",
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <AccountDashboard />
+          </Suspense>
+        ),
+      },
+      {
+        path: "account/orders",
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <MyOrders />
+          </Suspense>
+        ),
+      },
+      {
+        path: "account/edit",
+        element: (
+          <Suspense fallback={<PageFallback />}>
+            <EditProfile />
           </Suspense>
         ),
       },
@@ -167,6 +195,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageFallback />}>
                 <AdminUsers />
+              </Suspense>
+            ),
+          },
+          {
+            path: "customers",
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <AdminCustomers />
               </Suspense>
             ),
           },

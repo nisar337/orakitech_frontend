@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { HiHome, HiShoppingBag, HiPlusCircle, HiChartPie, HiUsers, HiCube, HiClipboardList, HiChatAlt2, HiShieldCheck } from "react-icons/hi";
+import { HiHome, HiShoppingBag, HiPlusCircle, HiChartPie, HiUsers, HiCube, HiClipboardList, HiChatAlt2, HiShieldCheck, HiUserGroup } from "react-icons/hi";
 import { API_BASE } from "../../config/api.js";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 
@@ -10,6 +10,7 @@ const menu = [
   ["Add product", "/admin/add"],
   ["Orders", "/admin/orders"],
   ["Admin Access", "/admin/users"],
+  ["Customer Accounts", "/admin/customers"],
   ["Categories", "/admin/categories"],
   ["Analytics", "/admin/analytics"],
   ["Reviews", "/admin/reviews"],
@@ -22,6 +23,7 @@ const iconMap = {
   "/admin/add": HiPlusCircle,
   "/admin/orders": HiChartPie,
   "/admin/users": HiUsers,
+  "/admin/customers": HiUserGroup,
   "/admin/categories": HiCube,
   "/admin/analytics": HiClipboardList,
   "/admin/reviews": HiChatAlt2,

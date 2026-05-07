@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCart } from "../hooks/useCart.js";
 import { API_BASE } from "../config/api.js";
 import { PKR_RATE, formatPkrFromUsd } from "../utils/currency.js";
 import OrderSuccessToast from "../components/OrderSuccessToast.jsx";
+import { useUserAuth } from "../hooks/useUserAuth.js";
 
 export default function Cart() {
   const { items, setQuantity, removeItem, clearCart } = useCart();
+  const { user, isLoggedIn } = useUserAuth();
   const navigate = useNavigate();
   const [status, setStatus] = useState({ kind: "idle", message: "" });
   const [orderPlacedPopup, setOrderPlacedPopup] = useState(false);
@@ -26,6 +28,16 @@ export default function Cart() {
     (s, x) => s + (Number(x.price) || 0) * x.quantity,
     0
   );
+
+  useEffect(() => {
+    if (!isLoggedIn || !user) return;
+    setOrderForm((prev) => ({
+      ...prev,
+      fullName: prev.fullName || user.name || "",
+      email: prev.email || user.email || "",
+      phone: prev.phone || String(user.phone || "").replace(/^\+92/, ""),
+    }));
+  }, [isLoggedIn, user]);
 
   function onFormChange(e) {
     const { name, value } = e.target;

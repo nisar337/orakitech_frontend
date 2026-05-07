@@ -33,9 +33,8 @@ export default function AdminUsers() {
   }, [adminFetch]);
 
   useEffect(() => {
-    if (!isPrimary) return;
     loadAdmins();
-  }, [loadAdmins, isPrimary]);
+  }, [loadAdmins]);
 
   function onFormChange(e) {
     const { name, value } = e.target;
@@ -230,6 +229,7 @@ export default function AdminUsers() {
               </ul>
             )}
           </div>
+
         </div>
 
         {isPrimary ? (

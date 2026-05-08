@@ -17,5 +17,4 @@ function normalizeApiBase(raw) {
 
 const fromEnv = normalizeApiBase(import.meta.env.VITE_API_URL);
 
-export const API_BASE =
-  fromEnv || (import.meta.env.DEV ? "" : "http://localhost:3002");
+export const API_BASE = fromEnv || "";

@@ -15,6 +15,7 @@ export default function EditAbout() {
     features: [],
     ctaTitle: "",
     ctaDescription: "",
+    socialLinks: [],
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -80,6 +81,26 @@ export default function EditAbout() {
     setContent((prev) => ({
       ...prev,
       features: prev.features.filter((_, i) => i !== index),
+    }));
+  }
+
+  function updateSocialLink(index, field, value) {
+    const newLinks = [...content.socialLinks];
+    newLinks[index][field] = value;
+    setContent((prev) => ({ ...prev, socialLinks: newLinks }));
+  }
+
+  function addSocialLink() {
+    setContent((prev) => ({
+      ...prev,
+      socialLinks: [...prev.socialLinks, { name: "", url: "" }],
+    }));
+  }
+
+  function removeSocialLink(index) {
+    setContent((prev) => ({
+      ...prev,
+      socialLinks: prev.socialLinks.filter((_, i) => i !== index),
     }));
   }
 
@@ -269,6 +290,69 @@ export default function EditAbout() {
               className="w-full rounded-lg border border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
             >
               + Add Feature
+            </button>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <h2 className="mb-4 text-lg font-semibold text-slate-900">Social Links</h2>
+          <div className="space-y-4">
+            {content.socialLinks.map((link, index) => (
+              <div
+                key={index}
+                className="rounded-lg border border-slate-200 bg-slate-50 p-4"
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-sm font-medium text-slate-700">
+                    Link {index + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeSocialLink(index)}
+                    className="text-xs text-rose-600 hover:text-rose-800"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-700">
+                      Platform Name
+                    </label>
+                    <input
+                      type="text"
+                      value={link.name}
+                      onChange={(e) =>
+                        updateSocialLink(index, "name", e.target.value)
+                      }
+                      placeholder="Facebook"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-700">
+                      URL
+                    </label>
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) =>
+                        updateSocialLink(index, "url", e.target.value)
+                      }
+                      placeholder="https://facebook.com/yourpage"
+                      className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addSocialLink}
+              className="w-full rounded-lg border border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              + Add Social Link
             </button>
           </div>
         </div>

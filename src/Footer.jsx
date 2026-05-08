@@ -1,9 +1,39 @@
 import { Link } from "react-router-dom";
-import { BsFacebook, BsLinkedin, BsTwitter, BsWhatsapp } from "react-icons/bs";
+import { BsFacebook, BsLinkedin, BsTwitter, BsWhatsapp, BsInstagram, BsYoutube, BsGithub, BsGlobe } from "react-icons/bs";
 import { HiHome, HiMail, HiPhone, HiShoppingBag, HiUserGroup } from "react-icons/hi";
 import LogoImage from "./assets/logo.svg";
+import { API_BASE } from "./config/api.js";
+import { useEffect, useState } from "react";
+
+const iconMap = {
+  facebook: BsFacebook,
+  linkedin: BsLinkedin,
+  twitter: BsTwitter,
+  whatsapp: BsWhatsapp,
+  instagram: BsInstagram,
+  youtube: BsYoutube,
+  github: BsGithub,
+};
+
+function getIcon(name) {
+  const key = name.toLowerCase();
+  return iconMap[key] || BsGlobe;
+}
 
 export default function Footer() {
+  const [socialLinks, setSocialLinks] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/about/public`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.socialLinks) {
+          setSocialLinks(data.socialLinks.filter((l) => l.name && l.url));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="bg-linear-to-r from-[#0a1c36] via-[#112a52] to-[#0a1c36] text-white">
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 md:px-10 py-10">
@@ -64,18 +94,25 @@ export default function Footer() {
               Follow Us
             </h3>
             <div className="mt-4 flex flex-wrap items-center justify-start gap-3 text-2xl text-white/90">
-              <a href="#" className="rounded-lg bg-white/10 p-2 hover:bg-white/15" aria-label="Facebook">
-                <BsFacebook />
-              </a>
-              <a href="#" className="rounded-lg bg-white/10 p-2 hover:bg-white/15" aria-label="LinkedIn">
-                <BsLinkedin />
-              </a>
-              <a href="#" className="rounded-lg bg-white/10 p-2 hover:bg-white/15" aria-label="Twitter">
-                <BsTwitter />
-              </a>
-              <a href="#" className="rounded-lg bg-white/10 p-2 hover:bg-white/15" aria-label="WhatsApp">
-                <BsWhatsapp />
-              </a>
+              {socialLinks.length === 0 ? (
+                <span className="text-sm text-white/50">No links added yet</span>
+              ) : (
+                socialLinks.map((link) => {
+                  const Icon = getIcon(link.name);
+                  return (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-white/10 p-2 hover:bg-white/15 transition-colors"
+                      aria-label={link.name}
+                    >
+                      <Icon />
+                    </a>
+                  );
+                })
+              )}
             </div>
           </div>
 

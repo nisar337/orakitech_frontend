@@ -184,6 +184,7 @@ export default function Card() {
       const res = await fetch(`${API_BASE}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           source: "buy_now",
           paymentMethod: "cod",

@@ -65,6 +65,7 @@ export default function Cart() {
       const res = await fetch(`${API_BASE}/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           source: "cart_checkout",
           paymentMethod: "cod",
@@ -94,7 +95,7 @@ export default function Cart() {
       clearCart();
       setStatus({ kind: "idle", message: "" });
       setOrderPlacedPopup(true);
-      setTimeout(() => navigate("/"), 4200);
+      setTimeout(() => navigate("/account/orders"), 4200);
     } catch (e) {
       setStatus({
         kind: "error",

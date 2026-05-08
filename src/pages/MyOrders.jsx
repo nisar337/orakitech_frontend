@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { API_BASE } from "../config/api.js";
 import { useUserAuth } from "../hooks/useUserAuth.js";
@@ -18,43 +18,32 @@ export default function MyOrders() {
   const [filter, setFilter] = useState("all");
   const [state, setState] = useState({ loading: true, message: "" });
 
-  useEffect(() => {
+  const fetchOrders = useCallback(async () => {
     if (!isLoggedIn) {
       setOrders([]);
       setState({ loading: false, message: "Please sign in to view your orders." });
       return;
     }
-    let active = true;
-    async function run() {
-      setState({ loading: true, message: "" });
-      try {
-        const res = await fetch(`${API_BASE}/api/orders/my`, {
-          credentials: "include",
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!active) return;
-        if (!res.ok) {
-          setState({
-            loading: false,
-            message: data?.message || "Could not load your orders.",
-          });
-          return;
-        }
-        setOrders(Array.isArray(data.orders) ? data.orders : []);
-        setState({ loading: false, message: "" });
-      } catch (err) {
-        if (!active) return;
-        setState({
-          loading: false,
-          message: err?.message || "Could not load your orders.",
-        });
+    setState({ loading: true, message: "" });
+    try {
+      const res = await fetch(`${API_BASE}/api/orders/my`, {
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setState({ loading: false, message: data?.message || "Could not load your orders." });
+        return;
       }
+      setOrders(Array.isArray(data.orders) ? data.orders : []);
+      setState({ loading: false, message: "" });
+    } catch (err) {
+      setState({ loading: false, message: err?.message || "Could not load your orders." });
     }
-    run();
-    return () => {
-      active = false;
-    };
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const visibleOrders = useMemo(() => {
     if (filter === "all") return orders;
@@ -76,9 +65,19 @@ export default function MyOrders() {
     <main className="mx-auto max-w-6xl px-4 py-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold text-slate-900">My Orders</h1>
-        <Link to="/account" className="text-sm font-medium text-[#12366A] underline">
-          Back to Dashboard
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={fetchOrders}
+            disabled={state.loading}
+            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+          >
+            {state.loading ? "Refreshing…" : "Refresh"}
+          </button>
+          <Link to="/account" className="text-sm font-medium text-[#12366A] underline">
+            Back to Dashboard
+          </Link>
+        </div>
       </div>
 
       <div className="mb-5 flex flex-wrap gap-2">

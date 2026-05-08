@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { HiHome, HiShoppingBag, HiPlusCircle, HiChartPie, HiUsers, HiCube, HiClipboardList, HiChatAlt2, HiShieldCheck, HiUserGroup } from "react-icons/hi";
+import { HiHome, HiShoppingBag, HiPlusCircle, HiChartPie, HiUsers, HiCube, HiClipboardList, HiChatAlt2, HiShieldCheck, HiUserGroup, HiDocumentText } from "react-icons/hi";
 import { API_BASE } from "../../config/api.js";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 
@@ -15,6 +15,7 @@ const menu = [
   ["Analytics", "/admin/analytics"],
   ["Reviews", "/admin/reviews"],
   ["Messages", "/admin/messages"],
+  ["Edit About", "/admin/about"],
 ];
 
 const iconMap = {
@@ -28,6 +29,7 @@ const iconMap = {
   "/admin/analytics": HiClipboardList,
   "/admin/reviews": HiChatAlt2,
   "/admin/messages": HiShieldCheck,
+  "/admin/about": HiDocumentText,
 };
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -110,7 +112,7 @@ export default function Sidebar({ isOpen, onClose }) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:block h-screen sticky top-0 overflow-y-auto">
+      <div className="hidden md:block h-screen sticky top-0 overflow-y-auto bg-[#0d2a5d]">
         {sidebarContent}
       </div>
 
@@ -118,7 +120,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-          <div className="relative">
+          <div className="relative bg-[#0d2a5d]">
             {sidebarContent}
           </div>
         </div>

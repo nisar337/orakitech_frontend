@@ -197,20 +197,20 @@ export default function Auth() {
             <FaChevronDown className={`text-xs transition-transform duration-300 ${profileDropdown ? 'rotate-180' : ''}`} />
           </button>
 
-          <div className={`absolute right-0 top-12 z-30 w-56 origin-top-right rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl transition-all duration-300 ease-out ${
+          <div className={`absolute right-0 top-8 z-30 w-30 origin-top-right rounded-lg border border-slate-200 bg-white text-slate-900 shadow-xl transition-all duration-300 ease-out ${
             profileDropdown 
               ? 'pointer-events-auto translate-y-0 scale-100 opacity-100' 
               : 'pointer-events-none -translate-y-2 scale-95 opacity-0'
           }`}>
             <div className="border-b border-slate-200 px-4 py-3">
               <p className="truncate text-sm font-semibold">{user?.name || "User"}</p>
-              <p className="truncate text-xs text-slate-600">{user?.email || ""}</p>
+        
             </div>
-            <div className="py-2">
+            <div>
               <Link
                 to="/account"
                 onClick={() => setProfileDropdown(false)}
-                className="block px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-100"
+                className="block px-4 py-0 text-sm text-slate-700 transition-colors hover:bg-slate-100"
               >
                 View Profile
               </Link>
@@ -227,7 +227,7 @@ export default function Auth() {
                   setProfileDropdown(false);
                   setConfirmLogout(true);
                 }}
-                className="w-full px-4 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-slate-100"
+                className="w-full px-4 py-2 text-center text-sm text-rose-600 transition-colors hover:bg-slate-100"
               >
                 Logout
               </button>

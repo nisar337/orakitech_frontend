@@ -30,6 +30,7 @@ const AdminLogin = lazy(() => import("./pages/AdminLogin.jsx"));
 const AdminUsers = lazy(() => import("./pages/AdminUsers.jsx"));
 const AdminCustomers = lazy(() => import("./pages/AdminCustomers.jsx"));
 const AdminCategories = lazy(() => import("./pages/AdminCategories.jsx"));
+const EditAbout = lazy(() => import("./components/admin-dashboard-components/EditAbout.jsx"));
 
 function PageFallback() {
   return (
@@ -235,6 +236,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageFallback />}>
                 <AdminPlaceholder title="Messages" />
+              </Suspense>
+            ),
+          },
+          {
+            path: "about",
+            element: (
+              <Suspense fallback={<PageFallback />}>
+                <EditAbout />
               </Suspense>
             ),
           },

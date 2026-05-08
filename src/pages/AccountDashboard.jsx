@@ -17,6 +17,7 @@ function statusBarClass(status = "") {
   return "w-1/3 bg-blue-500";
 }
 
+
 export default function AccountDashboard() {
   const { user, isLoggedIn, loading: authLoading } = useUserAuth();
   const [orders, setOrders] = useState([]);
@@ -89,7 +90,7 @@ export default function AccountDashboard() {
               <p className="text-3xl font-semibold">
                 Welcome , {user?.name || "User"}!
               </p>
-              <p className="text-base text-white/80">{user?.email || ""}</p>
+              
             </div>
           </div>
           <div className="rounded-xl bg-white/10 px-4 py-2">
@@ -144,11 +145,6 @@ export default function AccountDashboard() {
         </div>
 
         <div className="grid gap-3 lg:col-span-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xl font-semibold text-slate-900">My Addresses</p>
-            <p className="text-sm text-slate-600">Add/Edit delivery addresses</p>
-          </div>
-          
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
             <p className="text-xl font-semibold text-slate-900">Order Support</p>
             <p className="text-sm text-slate-600">+92 333 3777337</p>

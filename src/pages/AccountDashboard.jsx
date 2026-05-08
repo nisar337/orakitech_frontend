@@ -102,7 +102,7 @@ export default function AccountDashboard() {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-12">
+      <section className="grid gap-4 lg:grid-cols-16">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 lg:col-span-4">
           <div className="mb-3 flex items-center justify-between gap-2">
             <h2 className="text-2xl font-semibold text-slate-900">My Orders</h2>

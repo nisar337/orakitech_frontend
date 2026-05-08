@@ -7,6 +7,7 @@ export default function About() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetch(`${API_BASE}/api/about/public`)
       .then((res) => res.json())
       .then((data) => {
@@ -35,7 +36,24 @@ export default function About() {
   }
 
   return (
-    <div className="min-h-[150vh] bg-linear-to-br from-gray-50 to-gray-100 px-4 py-16">
+    <div
+      className="min-h-[150vh] bg-linear-to-br from-gray-50 to-gray-100 px-4 py-16"
+      style={{
+        animation: "fadeInUp 0.6s ease-out both",
+      }}
+    >
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
       <div className="max-w-6xl mx-auto space-y-16">
         {/* Hero Section */}
         <div className="text-center max-w-3xl mx-auto">

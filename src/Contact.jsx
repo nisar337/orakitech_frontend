@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { API_BASE } from "./config/api.js";
 
 export default function ContactUs() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -54,7 +58,24 @@ export default function ContactUs() {
   }
 
   return (
-    <div className="min-h-[100vh] bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12">
+    <div
+      className="min-h-[100vh] bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 py-12"
+      style={{
+        animation: "fadeInUp 0.6s ease-out both",
+      }}
+    >
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
       <div className="w-full max-w-6xl grid md:grid-cols-2 gap-10">
         {/* Left Info Section */}
         <div className="flex flex-col justify-center space-y-6">

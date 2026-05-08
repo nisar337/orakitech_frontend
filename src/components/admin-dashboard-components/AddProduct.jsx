@@ -435,7 +435,7 @@ export default function AddProduct() {
                     <button
                       type="button"
                       onClick={() => append({ label: "", value: "" })}
-                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer"
                     >
                       + Add row
                     </button>
@@ -446,7 +446,7 @@ export default function AddProduct() {
                           append({ label, value })
                         );
                       }}
-                      className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50"
+                      className="rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50 cursor-pointer"
                     >
                       + Common headings
                     </button>
@@ -485,7 +485,7 @@ export default function AddProduct() {
                         <button
                           type="button"
                           onClick={() => remove(index)}
-                          className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 sm:mb-0.5"
+                          className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 sm:mb-0.5 cursor-pointer"
                         >
                           Remove
                         </button>

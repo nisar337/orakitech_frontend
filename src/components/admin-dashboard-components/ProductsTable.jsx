@@ -96,7 +96,7 @@ export default function ProductsTable() {
                   <td className="py-2 pr-2">
                     <Link
                       to={`/${p.slug}`}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-blue-600 hover:underline font-medium cursor-pointer"
                     >
                       {p.title}
                     </Link>
@@ -119,13 +119,13 @@ export default function ProductsTable() {
                   <td className="py-2 space-x-3 whitespace-nowrap">
                     <Link
                       to={`/admin/edit/${p._id}`}
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-600 hover:underline cursor-pointer"
                     >
                       Edit
                     </Link>
                     <button
                       type="button"
-                      className="text-red-600 hover:underline disabled:opacity-50"
+                      className="text-red-600 hover:underline disabled:opacity-50 cursor-pointer"
                       disabled={deletingId === p._id}
                       onClick={() => handleDelete(p._id)}
                     >

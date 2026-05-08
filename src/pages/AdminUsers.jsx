@@ -217,7 +217,7 @@ export default function AdminUsers() {
                             type="button"
                             disabled={deletingId === a._id}
                             onClick={() => onDeleteAdmin(a._id, a.username, a.isPrimary)}
-                            className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50"
+                            className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 cursor-pointer"
                           >
                             {deletingId === a._id ? "Removing…" : "Delete"}
                           </button>

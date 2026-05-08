@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { API_BASE } from "../../config/api.js";
 import { formatPkrFromUsd } from "../../utils/currency.js";
 import { matchesOrderSearch } from "../../utils/adminSearch.js";
+import Modal from "../ui/Modal.jsx";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -11,6 +12,9 @@ export default function AdminOrders() {
   const [editingId, setEditingId] = useState(null);
   const [draft, setDraft] = useState(null);
   const [searchParams] = useSearchParams();
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [saveConfirmOpen, setSaveConfirmOpen] = useState(false);
 
   const searchQuery = String(searchParams.get("search") || "").trim();
 
@@ -65,11 +69,15 @@ export default function AdminOrders() {
     setDraft(null);
   }
 
-  async function saveEdit(orderId) {
-    if (!draft) return;
-    setSavingId(orderId);
+  function openSaveConfirm() {
+    setSaveConfirmOpen(true);
+  }
+
+  async function confirmSave() {
+    if (!draft || !editingId) return;
+    setSavingId(editingId);
     try {
-      const res = await fetch(`${API_BASE}/api/orders/${orderId}`, {
+      const res = await fetch(`${API_BASE}/api/orders/${editingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,34 +97,46 @@ export default function AdminOrders() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data.message || "Could not update order.");
+        setSaveConfirmOpen(false);
         return;
       }
-      setOrders((prev) => prev.map((o) => (o._id === orderId ? data : o)));
+      setOrders((prev) => prev.map((o) => (o._id === editingId ? data : o)));
       cancelEdit();
       setError(null);
+      setSaveConfirmOpen(false);
     } catch (e) {
       setError(e?.message || "Network error.");
+      setSaveConfirmOpen(false);
     } finally {
       setSavingId(null);
     }
   }
 
-  async function deleteOrder(orderId) {
-    if (!window.confirm("Delete this order?")) return;
-    setSavingId(orderId);
+  function openDeleteConfirm(orderId) {
+    setOrderToDelete(orderId);
+    setDeleteConfirmOpen(true);
+  }
+
+  async function confirmDelete() {
+    if (!orderToDelete) return;
+    setSavingId(orderToDelete);
     try {
-      const res = await fetch(`${API_BASE}/api/orders/${orderId}`, {
+      const res = await fetch(`${API_BASE}/api/orders/${orderToDelete}`, {
         method: "DELETE",
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(data.message || "Could not delete order.");
+        setDeleteConfirmOpen(false);
         return;
       }
-      setOrders((prev) => prev.filter((o) => o._id !== orderId));
+      setOrders((prev) => prev.filter((o) => o._id !== orderToDelete));
       setError(null);
+      setDeleteConfirmOpen(false);
+      setOrderToDelete(null);
     } catch (e) {
       setError(e?.message || "Network error.");
+      setDeleteConfirmOpen(false);
     } finally {
       setSavingId(null);
     }
@@ -168,16 +188,16 @@ export default function AdminOrders() {
                   </td>
                   <td className="px-4 py-3">
                     {editingId === o._id ? (
-                      <div className="space-y-1">
-                        <input className="w-full rounded border px-2 py-1" value={draft?.fullName || ""} onChange={(e) => updateDraft("fullName", e.target.value)} placeholder="Full name" />
-                        <input className="w-full rounded border px-2 py-1" value={draft?.phone || ""} onChange={(e) => updateDraft("phone", e.target.value)} placeholder="Phone" />
-                        <input className="w-full rounded border px-2 py-1" value={draft?.email || ""} onChange={(e) => updateDraft("email", e.target.value)} placeholder="Email" />
-                        <input className="w-full rounded border px-2 py-1" value={draft?.address || ""} onChange={(e) => updateDraft("address", e.target.value)} placeholder="Address" />
+                      <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <input className="w-full rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.fullName || ""} onChange={(e) => updateDraft("fullName", e.target.value)} placeholder="Full name" />
+                        <input className="w-full rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.phone || ""} onChange={(e) => updateDraft("phone", e.target.value)} placeholder="Phone" />
+                        <input className="w-full rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.email || ""} onChange={(e) => updateDraft("email", e.target.value)} placeholder="Email" />
+                        <input className="w-full rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.address || ""} onChange={(e) => updateDraft("address", e.target.value)} placeholder="Address" />
                         <div className="grid grid-cols-2 gap-1">
-                          <input className="rounded border px-2 py-1" value={draft?.city || ""} onChange={(e) => updateDraft("city", e.target.value)} placeholder="City" />
-                          <input className="rounded border px-2 py-1" value={draft?.country || ""} onChange={(e) => updateDraft("country", e.target.value)} placeholder="Country" />
+                          <input className="rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.city || ""} onChange={(e) => updateDraft("city", e.target.value)} placeholder="City" />
+                          <input className="rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.country || ""} onChange={(e) => updateDraft("country", e.target.value)} placeholder="Country" />
                         </div>
-                        <input className="w-full rounded border px-2 py-1" value={draft?.notes || ""} onChange={(e) => updateDraft("notes", e.target.value)} placeholder="Notes" />
+                        <input className="w-full rounded border px-2 py-1 transition-all focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={draft?.notes || ""} onChange={(e) => updateDraft("notes", e.target.value)} placeholder="Notes" />
                       </div>
                     ) : (
                       <>
@@ -220,16 +240,16 @@ export default function AdminOrders() {
                       <div className="space-x-2">
                         <button
                           type="button"
-                          onClick={() => saveEdit(o._id)}
+                          onClick={openSaveConfirm}
                           disabled={savingId === o._id}
-                          className="text-blue-600 hover:underline disabled:opacity-50"
+                          className="text-blue-600 hover:text-blue-800 transition-all duration-200 hover:scale-105 disabled:opacity-50"
                         >
                           Save
                         </button>
                         <button
                           type="button"
                           onClick={cancelEdit}
-                          className="text-gray-600 hover:underline"
+                          className="text-gray-600 hover:text-gray-800 transition-all duration-200 hover:scale-105"
                         >
                           Cancel
                         </button>
@@ -239,15 +259,15 @@ export default function AdminOrders() {
                         <button
                           type="button"
                           onClick={() => beginEdit(o)}
-                          className="text-blue-600 hover:underline"
+                          className="text-blue-600 hover:text-blue-800 transition-all duration-200 cursor-pointer hover:scale-102"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
-                          onClick={() => deleteOrder(o._id)}
+                          onClick={() => openDeleteConfirm(o._id)}
                           disabled={savingId === o._id}
-                          className="text-red-600 hover:underline disabled:opacity-50"
+                          className="text-red-600 hover:text-red-800 transition-all duration-200 hover:scale-102 cursor-pointer disabled:opacity-50"
                         >
                           Delete
                         </button>
@@ -260,6 +280,46 @@ export default function AdminOrders() {
           </table>
         </div>
       )}
+
+      <Modal
+        open={deleteConfirmOpen}
+        title="Confirm delete"
+        intent="danger"
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+          setOrderToDelete(null);
+        }}
+        secondaryAction={{
+          label: "No",
+          onClick: () => {
+            setDeleteConfirmOpen(false);
+            setOrderToDelete(null);
+          },
+        }}
+        primaryAction={{
+          label: "Yes",
+          onClick: confirmDelete,
+        }}
+      >
+        <p className="text-sm text-gray-700">Are you sure you want to delete this order?</p>
+      </Modal>
+
+      <Modal
+        open={saveConfirmOpen}
+        title="Confirm save"
+        intent="default"
+        onClose={() => setSaveConfirmOpen(false)}
+        secondaryAction={{
+          label: "No",
+          onClick: () => setSaveConfirmOpen(false),
+        }}
+        primaryAction={{
+          label: "Yes",
+          onClick: confirmSave,
+        }}
+      >
+        <p className="text-sm text-gray-700">Are you sure you want to save these changes?</p>
+      </Modal>
     </div>
   );
 }

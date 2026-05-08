@@ -223,7 +223,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-xl bg-[#112B54] px-4 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-60"
+              className="w-full rounded-xl bg-[#112B54] px-4 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-60 cursor-pointer"
             >
               {busy ? "Creating…" : "Create admin account"}
             </button>
@@ -267,7 +267,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={busy}
-              className="mt-6 w-full rounded-xl bg-[#112B54] px-4 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-60"
+              className="mt-6 w-full rounded-xl bg-[#112B54] px-4 py-3 font-semibold text-white hover:opacity-90 disabled:opacity-60 cursor-pointer"
             >
               {busy ? "Signing in…" : "Sign in"}
             </button>

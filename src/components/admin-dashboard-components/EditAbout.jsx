@@ -308,7 +308,7 @@ export default function EditAbout() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-[#12366A] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0d2550] disabled:opacity-50"
+            className="rounded-lg bg-[#12366A] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#0d2550] disabled:opacity-50 cursor-pointer"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

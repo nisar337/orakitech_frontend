@@ -12,10 +12,10 @@ const menu = [
   ["Admin Access", "/admin/users"],
   ["Customer Accounts", "/admin/customers"],
   ["Categories", "/admin/categories"],
-  ["Analytics", "/admin/analytics"],
+   ["Edit About", "/admin/about"],
   ["Reviews", "/admin/reviews"],
   ["Messages", "/admin/messages"],
-  ["Edit About", "/admin/about"],
+ 
 ];
 
 const iconMap = {
@@ -26,7 +26,6 @@ const iconMap = {
   "/admin/users": HiUsers,
   "/admin/customers": HiUserGroup,
   "/admin/categories": HiCube,
-  "/admin/analytics": HiClipboardList,
   "/admin/reviews": HiChatAlt2,
   "/admin/messages": HiShieldCheck,
   "/admin/about": HiDocumentText,
@@ -62,7 +61,7 @@ export default function Sidebar({ isOpen, onClose }) {
     <div className="h-full min-h-screen w-64 bg-[#0d2a5d] text-white p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] border-r border-white/10">
       <Link
         to="/admin"
-        className="mb-2 block rounded-[28px]  px-4 py-3 text-lg font-semibold uppercase tracking-[0.18em] text-white  "
+        className="mb-2 block rounded-[28px]  px-2 py-1  text-lg font-semibold uppercase tracking-[0.18em] text-white  "
       >
         ORAKITECH
       </Link>
@@ -82,7 +81,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <Link
                 to={to}
                 onClick={onClose}
-                className={`group flex items-center justify-between rounded-[22px]  text-sm transition duration-300 ease-out ${
+                className={`group flex items-center justify-between rounded-[22px]  text-sm transition duration-300 ease-out cursor-pointer ${
                   isActive
                     ? "bg-white/15 text-white shadow-[0_18px_30px_-18px_rgba(255,255,255,0.9)]"
                     : "bg-white/5 text-slate-100 hover:bg-white/15 hover:text-white hover:-translate-x-0.5"

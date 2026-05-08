@@ -1,6 +1,6 @@
 import { FaBell } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
 import Modal from "../ui/Modal.jsx";
@@ -103,13 +103,21 @@ export default function Navbar() {
 
   return (
     <div className="bg-white p-4 flex  flex-wrap justify-between items-center gap-3 shadow-sm">
-      <input
-        type="text"
-        placeholder="Search by title, brand, price, customer, or order..."
-        value={searchValue}
-        onChange={(event) => updateSearch(event.target.value)}
-        className="px-4 py-2 border  rounded-lg w-full md:w-1/2"
-      />
+      <div className="flex items-center gap-3 flex-1">
+        <input
+          type="text"
+          placeholder="Search by title, brand, price, customer, or order..."
+          value={searchValue}
+          onChange={(event) => updateSearch(event.target.value)}
+          className="px-4 py-2 border  rounded-lg w-full md:w-1/2"
+        />
+        <Link
+          to="/admin/analytics"
+          className="px-4 py-2 rounded-lg bg-[#12366A] text-white text-sm font-medium hover:bg-[#0d2550] transition-colors whitespace-nowrap cursor-pointer"
+        >
+          Analytics
+        </Link>
+      </div>
 
       <div className="flex items-center gap-4">
         <div className="relative">
@@ -124,7 +132,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setProfileOpen(true)}
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-gray-50"
+          className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-gray-50 cursor-pointer"
           title="View profile"
         >
           <img
@@ -137,7 +145,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setConfirmLogoutOpen(true)}
-          className="text-sm rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50"
+          className="text-sm rounded-lg border border-gray-300 px-3 py-1.5 hover:bg-gray-50 cursor-pointer"
         >
           Logout
         </button>

@@ -227,7 +227,7 @@ export default function Auth() {
                   setProfileDropdown(false);
                   setConfirmLogout(true);
                 }}
-                className="w-full px-4 py-2 text-center text-sm text-rose-600 transition-colors hover:bg-slate-100"
+                className="w-full px-4 py-2 text-center cursor-pointer text-sm text-rose-600 transition-colors hover:bg-slate-100"
               >
                 Logout
               </button>
@@ -235,7 +235,7 @@ export default function Auth() {
           </div>
 
           {confirmLogout ? (
-            <div className="absolute right-0 top-12 z-40 w-60 rounded-lg border border-slate-200 bg-white p-4 text-slate-900 shadow-xl">
+            <div className="absolute cursor-pointer right-0 top-12 z-40 w-60 rounded-lg border border-slate-200 bg-white p-4 text-slate-900 shadow-xl">
               <p className="mb-3 text-sm font-medium">Are you sure you want to logout?</p>
               <div className="flex justify-end gap-2">
                 <button

@@ -2,8 +2,26 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { UserAuthContext } from "./user-auth-context.js";
 import { API_BASE } from "../config/api.js";
 
+const USER_CACHE_KEY = "orakitech_user";
+
+function loadCachedUser() {
+  try {
+    const raw = localStorage.getItem(USER_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistUser(user) {
+  try {
+    if (user) localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
+    else localStorage.removeItem(USER_CACHE_KEY);
+  } catch {}
+}
+
 export function UserAuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => loadCachedUser());
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -15,11 +33,13 @@ export function UserAuthProvider({ children }) {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data?.user) {
         setUser(data.user);
+        persistUser(data.user);
       } else {
         setUser(null);
+        persistUser(null);
       }
     } catch {
-      setUser(null);
+      // Network error (e.g. server sleeping) — keep the cached user, don't auto-logout
     } finally {
       setLoading(false);
     }
@@ -43,6 +63,7 @@ export function UserAuthProvider({ children }) {
       return { ok: false, message };
     }
     setUser(data.user || null);
+    persistUser(data.user || null);
     setStatus("");
     return { ok: true };
   }, []);
@@ -61,6 +82,7 @@ export function UserAuthProvider({ children }) {
       return { ok: false, message };
     }
     setUser(data.user || null);
+    persistUser(data.user || null);
     setStatus("");
     return { ok: true };
   }, []);
@@ -71,6 +93,7 @@ export function UserAuthProvider({ children }) {
       credentials: "include",
     }).catch(() => null);
     setUser(null);
+    persistUser(null);
     setStatus("");
   }, []);
 

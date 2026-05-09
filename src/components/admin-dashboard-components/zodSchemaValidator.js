@@ -51,9 +51,7 @@ export const productFormSchema = z.object({
     errorMap: () => ({ message: "Please select stock status." }),
   }),
 
-  category: z.enum(["Normal", "Moderate", "Gaming", "High Performance"], {
-    errorMap: () => ({ message: "Please select a valid category." }),
-  }),
+  category: z.string().trim().min(1, "Category is required."),
   type: z.string().trim().min(1, "Product type is required."),
 
   specs: z

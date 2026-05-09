@@ -62,8 +62,8 @@ export default function MyOrders() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <main className="mx-auto max-w-6xl px-4 py-8 animate-fadeIn">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 animate-slideUp">
         <h1 className="text-3xl font-bold text-slate-900">My Orders</h1>
         <div className="flex items-center gap-3">
           <button

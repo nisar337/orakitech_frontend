@@ -8,6 +8,16 @@ import Select from "./Select";
 import { useLaptopData } from "../../hooks/useLaptopData.js";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
+import CategoryData from "../../components/nav-components/CategoryData.js";
+
+function getCategoryOptions() {
+  if (!CategoryData || !CategoryData.length) return [];
+  const all = [];
+  Object.values(CategoryData[0]).forEach((arr) => {
+    if (Array.isArray(arr)) all.push(...arr);
+  });
+  return Array.from(new Set(all));
+}
 
 const SPEC_PRESETS = [
   ["Processor", ""],
@@ -417,8 +427,8 @@ export default function AddProduct() {
                 name={"category"}
                 title={"Category"}
                 id={"product-category"}
-                hiddenValue={"Category"}
-                optionsValue={["Normal", "Moderate", "Gaming", "High Performance"]}
+                hiddenValue={"Select Category"}
+                optionsValue={getCategoryOptions()}
               />
 
               <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-4">

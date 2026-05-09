@@ -138,7 +138,7 @@ export default function AccountDashboard() {
           </div>
           <Link
             to="/account/orders"
-            className="mt-3 inline-block text-sm font-medium text-[#12366A] underline"
+            className="mt-3 inline-block text-sm font-medium text-[#12366A] underline transition-all duration-300 hover:text-blue-700 hover:translate-x-1"
           >
             View all orders
           </Link>
@@ -146,11 +146,14 @@ export default function AccountDashboard() {
 
         <div className="grid gap-3 lg:col-span-8 lg:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xl font-semibold text-slate-900">Order Support</p>
-            <p className="text-sm text-slate-600">+92 333 3777337</p>
+            <p className="text-xl font-semibold  text-slate-900">Order Support</p>
+            <div className="p-4">
+            <p className="text-sm  text-slate-600">+92 333 3777337</p>
+            <p className="text-sm text-slate-600">orakitech@gmail.com</p>
+            </div>
           </div>
           
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 lg:col-span-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 lg:col-span-1">
             <p className="text-xl font-semibold text-slate-900">Profile Details</p>
             <div className="mt-2 space-y-1 text-sm text-slate-700">
               <p>Name: {user?.name || "N/A"}</p>

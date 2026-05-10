@@ -104,7 +104,7 @@ export default function Home() {
                 to="/shop"
                 className="rounded-xl border border-blue-100 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
               >
-                Shop all laptops
+                Shop all products
               </Link>
             </div>
           </div>

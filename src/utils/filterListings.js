@@ -119,7 +119,7 @@ export function browseTitle(params) {
   const name = (params.name || "").trim();
   const q = (params.q || "").trim();
   if (q) return `Search: “${q}”`;
-  if (!section) return "All Laptops";
+  if (!section) return "All Products";
   const labels = {
     "new-laptop": "New laptops",
     "used-laptop": "Used laptops",

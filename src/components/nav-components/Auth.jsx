@@ -166,7 +166,7 @@ export default function Auth() {
                   onClick={() => setMode(mode === "register" ? "login" : "register")}
                   className="font-semibold text-[#10295A] underline transition-opacity duration-200 hover:opacity-80"
                 >
-                  [{mode === "register" ? "Sign in" : "Create account"}]
+                  {mode === "register" ? "Sign in" : "Create account"}
                 </button>
               </p>
 

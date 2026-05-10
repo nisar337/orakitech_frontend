@@ -10,13 +10,11 @@ import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
 import CategoryData from "../../components/nav-components/CategoryData.js";
 
-function getCategoryOptions() {
+const MAIN_CATEGORIES = ["New Laptop", "Used Laptop", "Accessories", "External Hardrive"];
+
+function getSubCategories(category) {
   if (!CategoryData || !CategoryData.length) return [];
-  const all = [];
-  Object.values(CategoryData[0]).forEach((arr) => {
-    if (Array.isArray(arr)) all.push(...arr);
-  });
-  return Array.from(new Set(all));
+  return CategoryData[0][category] || [];
 }
 
 const SPEC_PRESETS = [
@@ -58,6 +56,7 @@ export default function AddProduct() {
       quantity: "1",
       stockStatus: "In stock",
       category: "",
+      subCategory: "",
       type: "",
       images: undefined,
       specs: [],
@@ -70,10 +69,24 @@ export default function AddProduct() {
     reset,
     control,
     getValues,
+    watch,
+    setValue,
     formState: { errors },
   } = methods;
 
   const { fields, append, remove } = useFieldArray({ control, name: "specs" });
+
+  const selectedCategory = watch("category");
+
+  useEffect(() => {
+    if (selectedCategory) {
+      const subs = getSubCategories(selectedCategory);
+      const currentSub = watch("subCategory");
+      if (!subs.includes(currentSub)) {
+        setValue("subCategory", "");
+      }
+    }
+  }, [selectedCategory, setValue, watch]);
 
   useEffect(() => {
     if (!isEdit) {
@@ -93,6 +106,7 @@ export default function AddProduct() {
           quantity: "1",
           stockStatus: "In stock",
           category: "",
+          subCategory: "",
           type: "",
           images: undefined,
           specs: [],
@@ -127,6 +141,7 @@ export default function AddProduct() {
           quantity: doc.quantity != null ? String(doc.quantity) : "1",
           stockStatus: doc.stockStatus || "In stock",
           category: doc.category || "",
+          subCategory: doc.subCategory || "",
           type: doc.type || "",
           images: undefined,
           specs: Array.isArray(doc.specs)
@@ -168,6 +183,7 @@ export default function AddProduct() {
     fd.append("quantity", String(data.quantity ?? 1));
     fd.append("stockStatus", data.stockStatus || "In stock");
     fd.append("category", data.category);
+    fd.append("subCategory", data.subCategory);
     fd.append("type", data.type);
     fd.append("specs", JSON.stringify(data.specs ?? []));
 
@@ -423,13 +439,26 @@ export default function AddProduct() {
                 )}
               </div>
 
-              <Select
-                name={"category"}
-                title={"Category"}
-                id={"product-category"}
-                hiddenValue={"Select Category"}
-                optionsValue={getCategoryOptions()}
-              />
+              <div className="grid md:grid-cols-2 gap-4">
+                <Select
+                  name={"category"}
+                  title={"Category"}
+                  id={"product-category"}
+                  hiddenValue={"Select Category"}
+                  optionsValue={MAIN_CATEGORIES}
+                />
+                <Select
+                  name={"subCategory"}
+                  title={"Sub Category"}
+                  id={"product-sub-category"}
+                  hiddenValue={
+                    selectedCategory
+                      ? "Select Sub Category"
+                      : "Select a category first"
+                  }
+                  optionsValue={getSubCategories(selectedCategory)}
+                />
+              </div>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 space-y-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -543,7 +572,7 @@ export default function AddProduct() {
   {status.kind === "loading" ? (
     <>
       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
       </svg>
       {isEdit ? "Saving..." : "Uploading..."}

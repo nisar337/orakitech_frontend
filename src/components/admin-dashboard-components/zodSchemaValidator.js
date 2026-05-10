@@ -31,11 +31,11 @@ export const productFormSchema = z.object({
     .min(1, "Brand is required.")
     .min(2, "Brand should have at least 2 characters."),
 
-  ram: z.string().min(1, "RAM is required."),
+  ram: z.string().optional().default(""),
 
-  disk: z.string().min(1, "Disk type is required."),
+  disk: z.string().optional().default(""),
 
-  storage: z.string().min(1, "Storage is required."),
+  storage: z.string().optional().default(""),
 
   description: z
     .string()
@@ -52,6 +52,7 @@ export const productFormSchema = z.object({
   }),
 
   category: z.string().trim().min(1, "Category is required."),
+  subCategory: z.string().trim().min(1, "Sub category is required."),
   type: z.string().trim().min(1, "Product type is required."),
 
   specs: z
@@ -87,4 +88,29 @@ export const productFormSchema = z.object({
         (typeof FileList !== "undefined" && val instanceof FileList),
       { message: "Invalid file selection." }
     ),
+}).superRefine((data, ctx) => {
+  const cat = (data.category || "").trim();
+  if (cat === "New Laptop" || cat === "Used Laptop") {
+    if (!data.ram || data.ram.trim() === "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "RAM is required for laptop products.",
+        path: ["ram"],
+      });
+    }
+    if (!data.disk || data.disk.trim() === "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Disk type is required for laptop products.",
+        path: ["disk"],
+      });
+    }
+    if (!data.storage || data.storage.trim() === "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Storage is required for laptop products.",
+        path: ["storage"],
+      });
+    }
+  }
 });

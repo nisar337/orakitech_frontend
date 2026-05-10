@@ -5,22 +5,36 @@ function matchesBrandOrTitle(listing, nameRaw) {
   const name = nameRaw.trim().toLowerCase();
   const brand = (listing.brand || "").toLowerCase();
   const title = (listing.title || "").toLowerCase();
+  const subCategory = (listing.subCategory || "").toLowerCase();
   if (name === "macbook") {
     return (
       brand.includes("apple") ||
       title.includes("macbook") ||
-      title.includes("mac ")
+      title.includes("mac ") ||
+      subCategory.includes("macbook")
     );
   }
-  return brand.includes(name) || title.includes(name);
+  return brand.includes(name) || title.includes(name) || subCategory.includes(name);
 }
 
 function matchesKeywordList(listing, keywords) {
   const cat = (listing.category || "").toLowerCase();
+  const subCat = (listing.subCategory || "").toLowerCase();
   const title = (listing.title || "").toLowerCase();
   return keywords.some(
-    (k) => cat.includes(k) || title.includes(k)
+    (k) => cat.includes(k) || subCat.includes(k) || title.includes(k)
   );
+}
+
+const VALID_CATEGORIES = [
+  "new laptop",
+  "used laptop",
+  "accessories",
+  "external hardrive",
+];
+
+function hasNewCategory(listing) {
+  return VALID_CATEGORIES.includes((listing.category || "").toLowerCase());
 }
 
 export function filterListings(listings, params) {
@@ -36,52 +50,63 @@ export function filterListings(listings, params) {
       (l) =>
         (l.title || "").toLowerCase().includes(qq) ||
         (l.brand || "").toLowerCase().includes(qq) ||
-        (l.category || "").toLowerCase().includes(qq)
+        (l.category || "").toLowerCase().includes(qq) ||
+        (l.subCategory || "").toLowerCase().includes(qq)
     );
   }
 
   if (!section) return list;
 
   if (section === "new-laptop") {
-    list = list.filter((l) =>
-      String(l.type || "").toLowerCase().includes("new")
-    );
+    list = list.filter((l) => {
+      const cat = (l.category || "").toLowerCase();
+      if (hasNewCategory(l)) return cat === "new laptop";
+      return String(l.type || "").toLowerCase().includes("new");
+    });
     if (name) list = list.filter((l) => matchesBrandOrTitle(l, name));
     return list;
   }
 
   if (section === "used-laptop") {
-    list = list.filter((l) =>
-      String(l.type || "").toLowerCase().includes("used")
-    );
+    list = list.filter((l) => {
+      const cat = (l.category || "").toLowerCase();
+      if (hasNewCategory(l)) return cat === "used laptop";
+      return String(l.type || "").toLowerCase().includes("used");
+    });
     if (name) list = list.filter((l) => matchesBrandOrTitle(l, name));
     return list;
   }
 
   if (section === "accessories") {
+    list = list.filter((l) => {
+      const cat = (l.category || "").toLowerCase();
+      if (hasNewCategory(l)) return cat === "accessories";
+      return matchesKeywordList(l, ACCESSORY_KEYWORDS);
+    });
     if (name) {
       const nn = name.toLowerCase();
       list = list.filter(
         (l) =>
-          (l.category || "").toLowerCase().includes(nn) ||
+          (l.subCategory || "").toLowerCase().includes(nn) ||
           (l.title || "").toLowerCase().includes(nn)
       );
-    } else {
-      list = list.filter((l) => matchesKeywordList(l, ACCESSORY_KEYWORDS));
     }
     return list;
   }
 
   if (section === "external-hardrive") {
+    list = list.filter((l) => {
+      const cat = (l.category || "").toLowerCase();
+      if (hasNewCategory(l)) return cat === "external hardrive";
+      return matchesKeywordList(l, STORAGE_KEYWORDS);
+    });
     if (name) {
       const nn = name.toLowerCase();
       list = list.filter(
         (l) =>
-          (l.category || "").toLowerCase().includes(nn) ||
+          (l.subCategory || "").toLowerCase().includes(nn) ||
           (l.title || "").toLowerCase().includes(nn)
       );
-    } else {
-      list = list.filter((l) => matchesKeywordList(l, STORAGE_KEYWORDS));
     }
     return list;
   }

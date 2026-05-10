@@ -170,15 +170,6 @@ export default function Auth() {
                 </button>
               </p>
 
-              <p className="my-2 text-center text-xs text-slate-500">Or Sign in with:</p>
-              <div className="flex items-center justify-center">
-                <button
-                  type="button"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded border border-slate-300 transition-transform duration-200 hover:scale-105"
-                >
-                  <FcGoogle />
-                </button>
-              </div>
             </form>
         </>
       ) : (

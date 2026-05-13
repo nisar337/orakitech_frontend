@@ -13,6 +13,7 @@ import { useCart } from "./hooks/useCart.js";
 import { formatPkrFromUsd } from "./utils/currency.js";
 import OrderSuccessToast from "./components/OrderSuccessToast.jsx";
 import ProductEngagement from "./components/ProductEngagement.jsx";
+import Modal from "./components/ui/Modal.jsx";
 
 // Simple cache for product data with expiration
 const productCache = new Map();
@@ -450,98 +451,165 @@ export default function Card() {
               </button>
               <button
                 type="button"
-                disabled={!inStock || orderBusy}
+                disabled={!inStock}
                 onClick={() => {
-                  if (!showBuyerForm) {
-                    setShowBuyerForm(true);
-                    setOrderMsg("Please fill details to confirm Buy now.");
-                    return;
-                  }
-                  submitBuyNow();
+                  setShowBuyerForm(true);
+                  setOrderMsg("");
                 }}
                 className="w-full sm:w-auto rounded-xl bg-[#0a1c36] px-8 py-3 font-semibold text-white shadow hover:opacity-95 disabled:opacity-50"
               >
-                {orderBusy
-                  ? "Processing…"
-                  : showBuyerForm
-                    ? "Confirm buy now"
-                    : "Buy now"}
+                Buy now
               </button>
             </div>
-            {showBuyerForm ? (
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 rounded-xl bg-white p-4 border border-gray-200">
-                <input
-                  name="fullName"
-                  value={buyer.fullName}
-                  onChange={onBuyerChange}
-                  placeholder="Full name*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <input
-                  name="email"
-                  value={buyer.email}
-                  onChange={onBuyerChange}
-                  placeholder="Email*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <input
-                  name="phone"
-                  value={buyer.phone}
-                  onChange={onBuyerChange}
-                  placeholder="Phone*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <input
-                  name="address"
-                  value={buyer.address}
-                  onChange={onBuyerChange}
-                  placeholder="Address*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <input
-                  name="city"
-                  value={buyer.city}
-                  onChange={onBuyerChange}
-                  placeholder="City*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <input
-                  name="country"
-                  value={buyer.country}
-                  onChange={onBuyerChange}
-                  placeholder="Country*"
-                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <textarea
-                  name="notes"
-                  value={buyer.notes}
-                  onChange={onBuyerChange}
-                  placeholder="Notes (optional)"
-                  rows={2}
-                  className="md:col-span-2 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                />
-                <p className="md:col-span-2 text-sm text-gray-600">
-                  Payment method: <strong>Cash on delivery (COD)</strong>
-                </p>
-              </div>
-            ) : null}
-
             {cartMsg && (
               <p className="mt-3 text-sm text-emerald-700">{cartMsg}</p>
             )}
-            {orderMsg && (
-              <p
-                className={`mt-3 text-sm ${
-                  orderMsg.includes("Could not") ||
-                  orderMsg.includes("Network error") ||
-                  orderMsg.includes("Please fill name")
-                    ? "text-red-700"
-                    : "text-blue-800"
-                }`}
-              >
-                {orderMsg}
-              </p>
-            )}
+
+            <Modal
+              open={showBuyerForm}
+              title="Complete Your Order"
+              maxWidthClassName="max-w-lg"
+              onClose={() => {
+                if (!orderBusy) {
+                  setShowBuyerForm(false);
+                  setOrderMsg("");
+                  setBuyer(EMPTY_BUYER);
+                }
+              }}
+              closeOnBackdrop={!orderBusy}
+              closeOnEsc={!orderBusy}
+            >
+              <div className="mb-5 flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 p-3">
+                <img
+                  src={gallery[activeImg]?.url}
+                  alt={item?.title}
+                  className="h-14 w-14 shrink-0 rounded-lg border border-gray-100 bg-white object-contain p-1"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-gray-900">{item?.title}</p>
+                  <p className="mt-0.5 text-xs text-gray-500">Qty: {count}</p>
+                  <p className="mt-0.5 text-sm font-bold text-[#112B54]">{pkrFromUsd(item?.price)}</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Full name <span className="text-red-500">*</span></label>
+                  <input
+                    name="fullName"
+                    value={buyer.fullName}
+                    onChange={onBuyerChange}
+                    placeholder="Your full name"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Email <span className="text-red-500">*</span></label>
+                  <input
+                    name="email"
+                    value={buyer.email}
+                    onChange={onBuyerChange}
+                    placeholder="you@example.com"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Phone <span className="text-red-500">*</span></label>
+                  <input
+                    name="phone"
+                    value={buyer.phone}
+                    onChange={onBuyerChange}
+                    placeholder="03xx-xxxxxxx"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">City <span className="text-red-500">*</span></label>
+                  <input
+                    name="city"
+                    value={buyer.city}
+                    onChange={onBuyerChange}
+                    placeholder="Your city"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 sm:col-span-2">
+                  <label className="text-xs font-medium text-gray-600">Address <span className="text-red-500">*</span></label>
+                  <input
+                    name="address"
+                    value={buyer.address}
+                    onChange={onBuyerChange}
+                    placeholder="Street address"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 sm:col-span-2">
+                  <label className="text-xs font-medium text-gray-600">Country <span className="text-red-500">*</span></label>
+                  <input
+                    name="country"
+                    value={buyer.country}
+                    onChange={onBuyerChange}
+                    placeholder="Country"
+                    className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="flex flex-col gap-1 sm:col-span-2">
+                  <label className="text-xs font-medium text-gray-600">Order notes</label>
+                  <textarea
+                    name="notes"
+                    value={buyer.notes}
+                    onChange={onBuyerChange}
+                    placeholder="Any special instructions (optional)"
+                    rows={2}
+                    className="resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm text-emerald-800">
+                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Payment: <strong>Cash on delivery (COD)</strong></span>
+              </div>
+
+              {orderMsg && (
+                <p className="mt-3 text-sm font-medium text-red-600">{orderMsg}</p>
+              )}
+
+              <div className="mt-5 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  disabled={orderBusy}
+                  onClick={() => {
+                    setShowBuyerForm(false);
+                    setOrderMsg("");
+                    setBuyer(EMPTY_BUYER);
+                  }}
+                  className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={orderBusy}
+                  onClick={submitBuyNow}
+                  className="flex items-center gap-2 rounded-xl bg-[#0a1c36] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                >
+                  {orderBusy ? (
+                    <>
+                      <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Processing…
+                    </>
+                  ) : (
+                    "Confirm Order"
+                  )}
+                </button>
+              </div>
+            </Modal>
 
             <OrderSuccessToast
               show={orderPlacedPopup}

@@ -156,3 +156,11 @@ button:focus-visible {
 .animate-scaleIn {
   animation: scaleIn 0.25s ease-out both;
 }
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

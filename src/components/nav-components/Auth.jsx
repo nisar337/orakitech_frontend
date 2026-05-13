@@ -1,6 +1,5 @@
 import { BiSolidUser } from "react-icons/bi";
-import { useState, useRef } from "react";
-import { FcGoogle } from "react-icons/fc";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useUserAuth } from "../../hooks/useUserAuth.js";
 import { FaChevronDown } from "react-icons/fa";
@@ -18,6 +17,18 @@ export default function Auth() {
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [profileDropdown, setProfileDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClickOutside(e) {
+      if (formRef.current && !formRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
 
   async function submit(e) {
     e.preventDefault();
@@ -38,7 +49,7 @@ export default function Auth() {
   return (
     <div className="relative flex items-center">
       {!isLoggedIn ? (
-        <>
+        <div ref={formRef} className="relative">
           <button
             type="button"
             onClick={() => {
@@ -59,119 +70,118 @@ export default function Auth() {
                 : "pointer-events-none -translate-y-2 scale-95 opacity-0"
             }`}
           >
-              <h3 className="mb-4 text-center text-2xl font-bold">
-                {mode === "register" ? "Create Account" : "Sign  In"}
-              </h3>
+            <h3 className="mb-4 text-center text-2xl font-bold">
+              {mode === "register" ? "Create Account" : "Sign In"}
+            </h3>
 
-              {mode === "register" ? (
-                <>
-                  <label className="mb-1 block  text-left text-sm font-medium text-black">
-                    Full Name
-                  </label>
+            {mode === "register" ? (
+              <>
+                <label className="mb-1 block text-left text-sm font-medium text-black">
+                  Full Name
+                </label>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Full Name"
+                  className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+                  required
+                  minLength={2}
+                />
+              </>
+            ) : null}
+            <label className="mb-1 block text-left text-sm font-medium text-black">
+              Email Address
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email Address"
+              className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+              required
+            />
+            {mode === "register" ? (
+              <>
+                <label className="mb-1 block text-left text-sm font-medium text-black">
+                  Phone Number
+                </label>
+                <div className="mb-2 flex gap-2">
+                  <span className="inline-flex items-center rounded border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                    +92
+                  </span>
                   <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full Name"
-                    className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) =>
+                      setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                    }
+                    placeholder="Phone Number"
+                    inputMode="numeric"
+                    className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
                     required
-                    minLength={2}
+                    minLength={10}
+                    maxLength={10}
                   />
-                </>
-              ) : null}
-              <label className="mb-1 block text-left text-sm font-medium text-black">
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email Address"
-                className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
-                required
-              />
-              {mode === "register" ? (
-                <>
-                  <label className="mb-1 block text-left text-sm font-medium text-black">
-                    Phone Number
+                </div>
+              </>
+            ) : null}
+            <label className="mb-1 block text-left text-sm font-medium text-black">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+              required
+            />
+            {mode === "register" ? (
+              <>
+                <label className="mb-1 block text-left text-sm font-medium text-black">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm Password"
+                  className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
+                  required
+                />
+                <div className="mb-3 flex items-center gap-4 text-xs text-slate-600">
+                  <label className="inline-flex items-center gap-1">
+                    <input type="checkbox" required />
+                    <span>Terms of Service</span>
                   </label>
-                  <div className="mb-2 flex gap-2">
-                    <span className="inline-flex items-center rounded border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700">
-                      +92
-                    </span>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) =>
-                        setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
-                      }
-                      placeholder="Phone Number"
-                      inputMode="numeric"
-                      className="w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
-                      required
-                      minLength={10}
-                      maxLength={10}
-                    />
-                  </div>
-                </>
-              ) : null}
-              <label className="mb-1 block text-left text-sm font-medium text-black">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
-                required
-              />
-              {mode === "register" ? (
-                <>
-                  <label className="mb-1 block text-left text-sm font-medium text-black">
-                    Confirm Password
+                  <label className="inline-flex items-center gap-1">
+                    <input type="checkbox" required />
+                    <span>Privacy Policy</span>
                   </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm Password"
-                    className="mb-2 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500"
-                    required
-                  />
-                  <div className="mb-3 flex items-center gap-4 text-xs text-slate-600">
-                    <label className="inline-flex items-center gap-1">
-                      <input type="checkbox" required />
-                      <span>Terms of Service</span>
-                    </label>
-                    <label className="inline-flex items-center gap-1">
-                      <input type="checkbox" required />
-                      <span>Privacy Policy</span>
-                    </label>
-                  </div>
-                </>
-              ) : null}
-              {localStatus || status ? (
-                <p className="mb-2 text-xs text-rose-500">{localStatus || status}</p>
-              ) : null}
+                </div>
+              </>
+            ) : null}
+            {localStatus || status ? (
+              <p className="mb-2 text-xs text-rose-500">{localStatus || status}</p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-md bg-[#10295A] px-3 py-2 text-sm font-semibold text-white hover:bg-[#0b1f46] disabled:opacity-70"
+            >
+              {mode === "register" ? "Create Account" : "Sign In"}
+            </button>
+
+            <p className="mt-3 text-center text-xs text-slate-600">
+              {mode === "register" ? "Already have an account?" : "Don't have an account?"}{" "}
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-md bg-[#10295A] px-3 py-2 text-sm font-semibold text-white hover:bg-[#0b1f46] disabled:opacity-70"
+                type="button"
+                onClick={() => setMode(mode === "register" ? "login" : "register")}
+                className="font-semibold text-[#10295A] underline transition-opacity duration-200 hover:opacity-80"
               >
-                {mode === "register" ? "Create Account" : "Sign In"}
+                {mode === "register" ? "Sign in" : "Create account"}
               </button>
-
-              <p className="mt-3 text-center text-xs text-slate-600">
-                {mode === "register" ? "Already have an account?" : "Don't have an account?"}{" "}
-                <button
-                  type="button"
-                  onClick={() => setMode(mode === "register" ? "login" : "register")}
-                  className="font-semibold text-[#10295A] underline transition-opacity duration-200 hover:opacity-80"
-                >
-                  {mode === "register" ? "Sign in" : "Create account"}
-                </button>
-              </p>
-
-            </form>
-        </>
+            </p>
+          </form>
+        </div>
       ) : (
         <div 
           className="relative" 

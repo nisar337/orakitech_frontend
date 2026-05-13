@@ -1,5 +1,7 @@
 import { useEffect, useId, useState } from "react";
 
+const ANIM_DURATION = 260; // ms — keep in sync with transition duration below
+
 export default function Modal({
   open,
   title,
@@ -14,15 +16,19 @@ export default function Modal({
   placement = "center", // "center" | "top"
 }) {
   const headingId = useId();
+  const [visible, setVisible] = useState(false);
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      setVisible(true);
+      const t = setTimeout(() => setEntered(true), 10);
+      return () => clearTimeout(t);
+    } else {
       setEntered(false);
-      return;
+      const t = setTimeout(() => setVisible(false), ANIM_DURATION);
+      return () => clearTimeout(t);
     }
-    const t = setTimeout(() => setEntered(true), 10);
-    return () => clearTimeout(t);
   }, [open]);
 
   useEffect(() => {
@@ -34,7 +40,7 @@ export default function Modal({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, closeOnEsc, onClose]);
 
-  if (!open) return null;
+  if (!visible) return null;
 
   const ring =
     intent === "success"
@@ -54,7 +60,8 @@ export default function Modal({
         type="button"
         aria-label="Close modal overlay"
         className={[
-          "absolute inset-0 cursor-default bg-black/35 transition-opacity duration-200",
+          "absolute inset-0 cursor-default bg-black/40 transition-opacity",
+          `duration-[${ANIM_DURATION}ms]`,
           entered ? "opacity-100" : "opacity-0",
         ].join(" ")}
         onClick={closeOnBackdrop ? onClose : undefined}
@@ -65,24 +72,31 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={title ? headingId : undefined}
         className={[
-          "relative w-full rounded-2xl bg-white shadow-xl ring-1",
+          "relative flex max-h-[90vh] w-full flex-col rounded-2xl bg-white shadow-2xl ring-1",
           ring,
           maxWidthClassName,
-          "transition-all duration-200",
-          entered ? "opacity-100 scale-100" : "opacity-0 scale-95",
+          "transition-all ease-out",
+          `duration-[${ANIM_DURATION}ms]`,
+          entered
+            ? "opacity-100 scale-100 translate-y-0"
+            : "opacity-0 scale-95 translate-y-4",
         ].join(" ")}
       >
-        <div className="p-5 sm:p-6">
-          {title ? (
+        {title ? (
+          <div className="shrink-0 border-b border-gray-100 px-5 pb-4 pt-5 sm:px-6 sm:pt-6">
             <h2 id={headingId} className="text-lg font-semibold text-[#112B54]">
               {title}
             </h2>
-          ) : null}
+          </div>
+        ) : null}
 
-          <div className={title ? "mt-2" : ""}>{children}</div>
+        <div className="no-scrollbar flex-1 overflow-y-auto px-5 py-4 sm:px-6">
+          {children}
+        </div>
 
-          {(primaryAction || secondaryAction) && (
-            <div className="mt-6 flex items-center justify-end gap-2">
+        {(primaryAction || secondaryAction) && (
+          <div className="shrink-0 border-t border-gray-100 px-5 py-4 sm:px-6">
+            <div className="flex items-center justify-end gap-2">
               {secondaryAction ? (
                 <button
                   type="button"
@@ -109,8 +123,8 @@ export default function Modal({
                 </button>
               ) : null}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

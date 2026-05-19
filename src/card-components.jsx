@@ -445,7 +445,7 @@ export default function Card() {
                 type="button"
                 disabled={!inStock}
                 onClick={handleAddToCart}
-                className="w-full sm:w-auto rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow hover:bg-blue-700 disabled:opacity-50"
+                className="w-full sm:w-auto rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow-md hover:bg-blue-700 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
               >
                 Add to cart
               </button>
@@ -456,7 +456,7 @@ export default function Card() {
                   setShowBuyerForm(true);
                   setOrderMsg("");
                 }}
-                className="w-full sm:w-auto rounded-xl bg-[#0a1c36] px-8 py-3 font-semibold text-white shadow hover:opacity-95 disabled:opacity-50"
+                className="w-full sm:w-auto rounded-xl bg-emerald-600 px-8 py-3 font-semibold text-white shadow-md hover:bg-emerald-700 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
               >
                 Buy now
               </button>

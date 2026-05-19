@@ -1,8 +1,8 @@
-import { BiSolidUser } from "react-icons/bi";
+import { FaCircleUser, FaChevronDown, FaUser } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useUserAuth } from "../../hooks/useUserAuth.js";
-import { FaChevronDown } from "react-icons/fa";
+import PasswordInput from "../ui/PasswordInput.jsx";
 
 export default function Auth() {
   const { isLoggedIn, user, login, register, logout, status, loading } = useUserAuth();
@@ -56,10 +56,10 @@ export default function Auth() {
               setMode("login");
               setOpen((v) => !v);
             }}
-            className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-sm transition-colors duration-200 hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/10 px-3 py-1.5 text-sm transition-colors duration-200 hover:bg-white/20 hover:border-white/50"
             title="Login / Sign In"
           >
-            <BiSolidUser className="text-base" />
+            <FaUser className="text-base text-blue-300" />
             <span>Login</span>
           </button>
           <form
@@ -126,8 +126,7 @@ export default function Auth() {
               </>
             ) : null}
             <label className="mb-1 block text-left text-sm font-medium text-black">Password</label>
-            <input
-              type="password"
+            <PasswordInput
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
@@ -139,8 +138,7 @@ export default function Auth() {
                 <label className="mb-1 block text-left text-sm font-medium text-black">
                   Confirm Password
                 </label>
-                <input
-                  type="password"
+                <PasswordInput
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm Password"
@@ -191,10 +189,10 @@ export default function Auth() {
         >
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 p-2 transition-colors duration-200 hover:bg-white/20"
+            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-2 transition-colors duration-200 hover:bg-white/20 hover:border-white/50"
             title="User Menu"
           >
-            <BiSolidUser className="text-lg" />
+            <FaCircleUser className="text-xl text-blue-300" />
             <FaChevronDown className={`text-xs transition-transform duration-300 ${profileDropdown ? 'rotate-180' : ''}`} />
           </button>
 

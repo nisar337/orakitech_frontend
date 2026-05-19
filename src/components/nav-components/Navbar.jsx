@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Search from "./Search";
 import Auth from "./Auth";
-import { FaBell } from "react-icons/fa";
+import Notifications from "./Notifications";
 import { MdSupportAgent } from "react-icons/md";
 import Logo from "../../assets/logo.svg";
 import NavMenu from "./nav-menu";
@@ -14,7 +14,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center">
             <img className="h-10 md:h-12" src={Logo} alt="OrakiTech Logo" />
             <div className="md:hidden flex items-center gap-3">
-              <FaBell className="cursor-pointer text-white text-xl" />
+              <Notifications />
               <Link to="/contact" className="cursor-pointer hover:scale-110 hover:text-blue-300 transition-all duration-300">
                 <MdSupportAgent className="text-2xl" />
               </Link>
@@ -25,7 +25,7 @@ export default function Navbar() {
             <Search />
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <FaBell className="cursor-pointer text-white text-xl" />
+            <Notifications />
             <Link to="/contact" className="cursor-pointer hover:scale-110 hover:text-blue-300 transition-all duration-300">
               <MdSupportAgent className="text-2xl" />
             </Link>

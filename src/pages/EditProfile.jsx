@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { API_BASE } from "../config/api.js";
 import { useUserAuth } from "../hooks/useUserAuth.js";
+import PasswordInput from "../components/ui/PasswordInput.jsx";
 
 const EMPTY_FORM = { label: "Home", fullName: "", phone: "", address: "", city: "", country: "Pakistan", isDefault: false };
 const LABELS = ["Home", "Office", "Other"];
@@ -438,8 +439,7 @@ export default function EditProfile() {
                   <label className="mb-1 block text-sm font-medium text-slate-900">
                     Current Password
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all duration-200 focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"
@@ -451,8 +451,7 @@ export default function EditProfile() {
                   <label className="mb-1 block text-sm font-medium text-slate-900">
                     New Password
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all duration-200 focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"
@@ -464,8 +463,7 @@ export default function EditProfile() {
                   <label className="mb-1 block text-sm font-medium text-slate-900">
                     Confirm New Password
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none transition-all duration-200 focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"

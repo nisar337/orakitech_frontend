@@ -165,7 +165,7 @@ export default function Cart() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="rounded border px-2 py-1 text-sm"
+                    className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium hover:bg-gray-100 hover:border-gray-400 active:bg-gray-200 transition-colors duration-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
                     onClick={() =>
                       setQuantity(line.listingId, line.quantity - 1)
                     }
@@ -175,7 +175,7 @@ export default function Cart() {
                   <span className="w-8 text-center">{line.quantity}</span>
                   <button
                     type="button"
-                    className="rounded border px-2 py-1 text-sm"
+                    className="rounded border border-gray-300 bg-white px-2 py-1 text-sm font-medium hover:bg-gray-100 hover:border-gray-400 active:bg-gray-200 transition-colors duration-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
                     onClick={() =>
                       setQuantity(line.listingId, line.quantity + 1)
                     }
@@ -260,7 +260,7 @@ export default function Cart() {
               type="button"
               disabled={status.kind === "loading"}
               onClick={placeOrder}
-              className="w-full sm:w-auto rounded-xl bg-[#112B54] px-6 py-3 text-white font-semibold hover:opacity-90 disabled:opacity-50"
+              className="w-full sm:w-auto rounded-xl bg-emerald-600 px-6 py-3 text-white font-semibold hover:bg-emerald-700 hover:shadow-md active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2"
             >
               Place order
             </button>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../hooks/useAdminAuth.js";
+import PasswordInput from "../components/ui/PasswordInput.jsx";
 import { API_BASE } from "../config/api.js";
 
 export default function AdminLogin() {
@@ -199,8 +200,7 @@ export default function AdminLogin() {
               className="mt-1 mb-3 w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#112B54]"
             />
             <label className="text-sm text-gray-700">Password</label>
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={setup.password}
               onChange={onSetupChange}
@@ -210,8 +210,7 @@ export default function AdminLogin() {
               minLength={8}
             />
             <label className="text-sm text-gray-700">Confirm password</label>
-            <input
-              type="password"
+            <PasswordInput
               name="confirm"
               value={setup.confirm}
               onChange={onSetupChange}
@@ -256,8 +255,7 @@ export default function AdminLogin() {
               className="mt-1 mb-4 w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#112B54]"
             />
             <label className="text-sm text-gray-700">Password</label>
-            <input
-              type="password"
+            <PasswordInput
               name="password"
               value={form.password}
               onChange={onChange}

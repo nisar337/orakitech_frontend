@@ -242,7 +242,7 @@ export default function ProductEngagement({
             <button
               type="submit"
               disabled={reviewBusy}
-              className="rounded-lg bg-[#112B54] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 hover:shadow-md active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
             >
               {reviewBusy ? "Submitting…" : "Submit review"}
             </button>
@@ -334,7 +334,7 @@ export default function ProductEngagement({
             <button
               type="submit"
               disabled={qBusy}
-              className="rounded-lg bg-[#112B54] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-50"
+              className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 hover:shadow-md active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
             >
               {qBusy ? "Sending…" : "Post question"}
             </button>

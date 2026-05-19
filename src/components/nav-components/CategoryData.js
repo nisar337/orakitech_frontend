@@ -3,7 +3,7 @@ const CategoryData = [
     "New Laptop": ["HP", "Dell", "Lenovo", "Acer", "Macbook"],
     "Used Laptop": ["HP", "Dell", "Lenovo", "Acer", "Macbook", "G Tech"],
     Accessories: ["Charger", "Keyboard", "Mouse", "Mouse Pad"],
-    "External Hardrive": ["SSD", "HDD", "USB", "RAM", "External Hard Drive"],
+    "External Hard drive": ["SSD", "HDD", "USB", "RAM", "External Hard Drive"],
   },
 ];
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_BASE } from "../config/api.js";
 import { useAdminAuth } from "../hooks/useAdminAuth.js";
+import PasswordInput from "../components/ui/PasswordInput.jsx";
 
 export default function AdminUsers() {
   const { username, fullName, displayName, avatarUrl, isPrimary, adminFetch } = useAdminAuth();
@@ -267,9 +268,8 @@ export default function AdminUsers() {
           </div>
           <div>
             <label className="text-xs text-gray-600">Password (min 8)</label>
-            <input
+            <PasswordInput
               name="password"
-              type="password"
               value={form.password}
               onChange={onFormChange}
               required

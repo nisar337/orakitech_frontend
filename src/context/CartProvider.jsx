@@ -22,16 +22,29 @@ export function CartProvider({ children }) {
       const id = listing._id;
       if (!id) return;
       const q = Math.max(1, Math.min(99, Number(qty) || 1));
+      const maxStock = Number.isFinite(Number(listing.quantity))
+        ? Math.max(0, Math.floor(Number(listing.quantity)))
+        : null;
       setItems((prev) => {
         const i = prev.findIndex((x) => x.listingId === id);
         let next;
         if (i >= 0) {
+          const existing = prev[i];
+          if (maxStock !== null && maxStock <= 0) return prev;
+          const nextQty =
+            maxStock !== null
+              ? Math.min(99, Math.min(maxStock, existing.quantity + q))
+              : Math.min(99, existing.quantity + q);
           next = [...prev];
           next[i] = {
             ...next[i],
-            quantity: Math.min(99, next[i].quantity + q),
+            quantity: nextQty,
+            maxStock: maxStock ?? next[i].maxStock ?? null,
           };
         } else {
+          if (maxStock !== null && maxStock <= 0) return prev;
+          const nextQty =
+            maxStock !== null ? Math.min(99, Math.min(maxStock, q)) : q;
           next = [
             ...prev,
             {
@@ -39,8 +52,9 @@ export function CartProvider({ children }) {
               slug: listing.slug,
               title: listing.title,
               price: Number(listing.price) || 0,
-              quantity: q,
+              quantity: nextQty,
               image: listingThumb(listing),
+              maxStock,
             },
           ];
         }
@@ -60,7 +74,13 @@ export function CartProvider({ children }) {
       } else {
         const q = Math.min(99, Math.floor(raw));
         next = prev.map((x) =>
-          x.listingId === listingId ? { ...x, quantity: q } : x
+          x.listingId === listingId
+            ? {
+                ...x,
+                quantity:
+                  x.maxStock != null ? Math.min(q, x.maxStock) : q,
+              }
+            : x
         );
       }
       writeCartToStorage(next);

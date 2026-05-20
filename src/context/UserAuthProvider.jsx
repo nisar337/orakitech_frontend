@@ -45,12 +45,70 @@ export function UserAuthProvider({ children }) {
     }
   }, []);
 
+  const requestPasswordReset = useCallback(async (email) => {
+    const res = await fetch(`${API_BASE}/api/auth/forgot-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data?.message || "Could not send OTP.";
+      setStatus(message);
+      return { ok: false, message };
+    }
+    setStatus("");
+    return { ok: true };
+  }, []);
+
+  const verifyResetOtp = useCallback(async ({ email, otp }) => {
+    const res = await fetch(`${API_BASE}/api/auth/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, otp }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data?.message || "OTP verification failed.";
+      setStatus(message);
+      return { ok: false, message };
+    }
+    setStatus("");
+    return { ok: true, token: data?.token };
+  }, []);
+
+  const resetPassword = useCallback(async ({ token, password }) => {
+    const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify({ password }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data?.message || "Password reset failed.";
+      setStatus(message);
+      return { ok: false, message };
+    }
+    if (data?.user) {
+      setUser(data.user);
+      persistUser(data.user);
+    }
+    setStatus("");
+    return { ok: true };
+  }, []);
+
   useEffect(() => {
     fetchSession();
   }, [fetchSession]);
 
   const register = useCallback(async ({ name, email, password, phone }) => {
-    const res = await fetch(`${API_BASE}/api/auth/user/register`, {
+    const res = await fetch(`${API_BASE}/api/auth/register-request`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -58,12 +116,48 @@ export function UserAuthProvider({ children }) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const message = data?.message || "Could not register.";
+      const message = data?.message || "Could not start registration.";
       setStatus(message);
       return { ok: false, message };
     }
-    setUser(data.user || null);
-    persistUser(data.user || null);
+    setStatus("");
+    return { ok: true, email: data?.email || email };
+  }, []);
+
+  const verifyRegistrationOtp = useCallback(async ({ email, otp }) => {
+    const res = await fetch(`${API_BASE}/api/auth/verify-registration`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email, otp }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data?.message || "OTP verification failed.";
+      setStatus(message);
+      return { ok: false, message };
+    }
+    if (data?.user) {
+      setUser(data.user);
+      persistUser(data.user);
+    }
+    setStatus("");
+    return { ok: true, user: data?.user || null };
+  }, []);
+
+  const resendRegistrationOtp = useCallback(async (email) => {
+    const res = await fetch(`${API_BASE}/api/auth/resend-register-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data?.message || "Could not resend OTP.";
+      setStatus(message);
+      return { ok: false, message };
+    }
     setStatus("");
     return { ok: true };
   }, []);
@@ -104,11 +198,29 @@ export function UserAuthProvider({ children }) {
       loading,
       isLoggedIn: Boolean(user),
       register,
+      verifyRegistrationOtp,
+      resendRegistrationOtp,
       login,
       logout,
+      requestPasswordReset,
+      verifyResetOtp,
+      resetPassword,
       refreshSession: fetchSession,
     }),
-    [user, status, loading, register, login, logout, fetchSession]
+    [
+      user,
+      status,
+      loading,
+      register,
+      verifyRegistrationOtp,
+      resendRegistrationOtp,
+      login,
+      logout,
+      requestPasswordReset,
+      verifyResetOtp,
+      resetPassword,
+      fetchSession,
+    ]
   );
 
   return (

@@ -167,7 +167,7 @@ export default function Card() {
   }, [count, maxQty]);
 
   async function submitBuyNow() {
-    if (!item?._id) return;
+    if (!item?._id || disablePurchase) return;
     if (
       !buyer.fullName ||
       !buyer.email ||
@@ -218,7 +218,7 @@ export default function Card() {
   }
 
   function handleAddToCart() {
-    if (!item) return;
+    if (!item || disablePurchase) return;
     addItem(item, count);
     setCartMsg("Added to cart.");
     setTimeout(() => setCartMsg(""), 2500);
@@ -234,6 +234,9 @@ export default function Card() {
       ? item.stockStatus === "In stock"
       : Number(item.quantity) > 0 || item.quantity === undefined
     : false;
+  const availableStock = item ? Math.max(0, Number(item.quantity) || 0) : 0;
+  const exceedsStock = item ? count > availableStock : false;
+  const disablePurchase = !inStock || availableStock <= 0 || exceedsStock;
 
   if (!item?.title) {
     return (
@@ -443,7 +446,7 @@ export default function Card() {
             <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <button
                 type="button"
-                disabled={!inStock}
+                disabled={disablePurchase}
                 onClick={handleAddToCart}
                 className="w-full sm:w-auto rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow-md hover:bg-blue-700 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
               >
@@ -451,7 +454,7 @@ export default function Card() {
               </button>
               <button
                 type="button"
-                disabled={!inStock}
+                disabled={disablePurchase}
                 onClick={() => {
                   setShowBuyerForm(true);
                   setOrderMsg("");
@@ -461,6 +464,13 @@ export default function Card() {
                 Buy now
               </button>
             </div>
+            {!inStock || availableStock <= 0 ? (
+              <p className="mt-3 text-sm text-rose-600">Out of stock.</p>
+            ) : exceedsStock ? (
+              <p className="mt-3 text-sm text-rose-600">
+                Only {availableStock} left in stock.
+              </p>
+            ) : null}
             {cartMsg && (
               <p className="mt-3 text-sm text-emerald-700">{cartMsg}</p>
             )}

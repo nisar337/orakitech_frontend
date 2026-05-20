@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth.js";
 import { API_BASE } from "../../config/api.js";
 import Modal from "../ui/Modal.jsx";
+import PasswordInput from "../ui/PasswordInput.jsx";
 
 export default function Navbar() {
   const { displayName, logout, username, fullName, email, role, avatarUrl, adminFetch, updateUser } =
@@ -19,6 +20,14 @@ export default function Navbar() {
   const [avatarError, setAvatarError] = useState("");
   const [avatarSuccessOpen, setAvatarSuccessOpen] = useState(false);
   const [avatarSuccessUrl, setAvatarSuccessUrl] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordState, setPasswordState] = useState({
+    loading: false,
+    message: "",
+    success: false,
+  });
 
   useEffect(() => {
     setSearchValue(searchParams.get("search") || "");
@@ -44,6 +53,70 @@ export default function Navbar() {
       clearInterval(t);
     };
   }, []);
+
+  async function updatePassword() {
+    if (passwordState.loading) return;
+    setPasswordState({ loading: true, message: "", success: false });
+
+    if (!currentPassword || !newPassword) {
+      setPasswordState({
+        loading: false,
+        message: "Please enter your current and new password.",
+        success: false,
+      });
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordState({
+        loading: false,
+        message: "New password must be at least 8 characters.",
+        success: false,
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordState({
+        loading: false,
+        message: "New password and confirm password do not match.",
+        success: false,
+      });
+      return;
+    }
+
+    try {
+      const res = await adminFetch(`${API_BASE}/api/auth/admin/me/password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setPasswordState({
+          loading: false,
+          message: data?.message || "Could not update password.",
+          success: false,
+        });
+        return;
+      }
+      setPasswordState({
+        loading: false,
+        message: "Password updated successfully.",
+        success: true,
+      });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (e) {
+      setPasswordState({
+        loading: false,
+        message: e?.message || "Could not update password.",
+        success: false,
+      });
+    }
+  }
 
   function updateSearch(value) {
     const next = value || "";
@@ -176,6 +249,10 @@ export default function Navbar() {
           setProfileOpen(false);
           setAvatarError("");
           setAvatarFile(null);
+          setPasswordState({ loading: false, message: "", success: false });
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmPassword("");
         }}
         secondaryAction={{ label: "Close", onClick: () => setProfileOpen(false) }}
         primaryAction={
@@ -233,6 +310,67 @@ export default function Navbar() {
               {avatarError}
             </p>
           ) : null}
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-sm font-semibold text-gray-800">Change password</h3>
+          <p className="mt-1 text-xs text-gray-500">
+            Enter your current password to set a new one.
+          </p>
+          <div className="mt-3 space-y-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-700">
+                Current password
+              </label>
+              <PasswordInput
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"
+                minLength={8}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-700">
+                New password
+              </label>
+              <PasswordInput
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"
+                minLength={8}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-700">
+                Confirm new password
+              </label>
+              <PasswordInput
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-[#12366A] focus:ring-2 focus:ring-[#12366A]/20"
+                minLength={8}
+              />
+            </div>
+            {passwordState.message ? (
+              <div
+                className={`rounded-lg px-3 py-2 text-xs ${
+                  passwordState.success
+                    ? "bg-emerald-50 text-emerald-800"
+                    : "bg-rose-50 text-rose-700"
+                }`}
+              >
+                {passwordState.message}
+              </div>
+            ) : null}
+            <button
+              type="button"
+              onClick={updatePassword}
+              disabled={passwordState.loading}
+              className="w-full rounded-lg bg-[#12366A] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0d2550] disabled:opacity-60"
+            >
+              {passwordState.loading ? "Updating..." : "Update password"}
+            </button>
+          </div>
         </div>
       </Modal>
 

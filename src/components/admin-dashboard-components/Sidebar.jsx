@@ -58,7 +58,7 @@ export default function Sidebar({ isOpen, onClose }) {
   }, []);
 
   const sidebarContent = (
-    <div className="h-full min-h-screen w-64 bg-[#0d2a5d] text-white p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] border-r border-white/10">
+    <div className="h-full min-h-screen w-72 bg-[#0d2a5d] text-white p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] border-r border-white/10">
       <Link
         to="/admin"
         className="mb-2 block rounded-[28px]  px-2 py-1  text-lg font-semibold uppercase tracking-[0.18em] text-white  "

@@ -37,12 +37,7 @@ export const productFormSchema = z.object({
 
   storage: z.string().optional().default(""),
 
-  description: z
-    .string()
-    .trim()
-    .min(1, "Description is required.")
-    .min(10, "Use at least 10 characters.")
-    .max(2000, "Description can be at most 2000 characters."),
+  description: z.string().optional().default(""),
 
   price: priceFromInput,
 
@@ -53,7 +48,7 @@ export const productFormSchema = z.object({
 
   category: z.string().trim().min(1, "Category is required."),
   subCategory: z.string().trim().min(1, "Sub category is required."),
-  type: z.string().trim().min(1, "Product type is required."),
+  type: z.string().optional().default(""),
 
   specs: z
     .array(
@@ -110,6 +105,13 @@ export const productFormSchema = z.object({
         code: z.ZodIssueCode.custom,
         message: "Storage is required for laptop products.",
         path: ["storage"],
+      });
+    }
+    if (!data.type || data.type.trim() === "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Product type is required for laptop products.",
+        path: ["type"],
       });
     }
   }
